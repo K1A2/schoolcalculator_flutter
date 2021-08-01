@@ -15,6 +15,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: MyaAppPage(),
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity
+      ),
     );
   }
 }

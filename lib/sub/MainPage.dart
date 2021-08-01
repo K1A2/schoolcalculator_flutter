@@ -117,7 +117,7 @@ class _MainStafulPage extends State<MainStafulPage> {
                   padding: EdgeInsets.all(10),
                   child: Card(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Padding(
                         padding: EdgeInsets.all(20),
