@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import '../data/DecodeScoreJson.dart';
 import '../widget/SnackManager.dart';
 import '../data/SchoolScore.dart';
@@ -26,13 +29,15 @@ class SchoolScoreInputPage extends StatefulWidget {
 
 class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final double _cardSize = 50.0;
+  final double _cardSize = 60.0;
   final double _cardPaddingSize = 50.0;
   final double _expandPaddingSize = 8.0;
   final double _bodySize = 50.0;
-
+  final List<String> _type = ["국어","수학","영어","과학탐구","사회탐구","기타"];
+  bool _switch = false;
   final List<Item> _data = [];
   final DecodeScoreJsonData _json_data = DecodeScoreJsonData("");
+  final subjectController = TextEditingController();
 
   @override
   void initState() {
@@ -61,7 +66,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                 },
                 children: _data.map<ExpansionPanel>((Item item) {
                   return ExpansionPanel(
-                      headerBuilder: (BuildContext context, bool isExpanded) {
+                      headerBuilder: (BuildContext context1, bool isExpanded) {
                         return ListTile(
                           title: Text(item.show),
                           subtitle: Text('2.3'),
@@ -72,6 +77,31 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+                            Visibility(
+                              visible: item.code == '32' ? true : false,
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Text("3학년 2학기 포함하기"),
+                                      ),
+                                      Switch(
+                                        value: _switch,
+                                        onChanged: (bool isOn) {
+                                          setState(() {
+                                            _switch = isOn;
+                                          });
+                                        },
+                                        activeColor: Color(0xFF652D87),
+                                        activeTrackColor: Color(0xFF8743AD),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                             Container(
                               child: Padding(
                                 padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
@@ -79,23 +109,38 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                   children: <Widget>[
                                     Expanded(
                                       flex: 2,
-                                      child: Text('과목'),
+                                      child: Text(
+                                        '과목',
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: Text('등급'),
+                                      child: Text(
+                                        '등급',
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: Text('단위'),
+                                      child: Text(
+                                        '단위',
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                     Expanded(
                                       flex: 2,
-                                      child: Text('과목계열'),
+                                      child: Text(
+                                        '과목계열',
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: Text('삭제'),
+                                      child: Text(
+                                        '삭제',
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -121,36 +166,151 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                             children: <Widget>[
                                               Expanded(
                                                 flex: 2,
-                                                child: Text(item.scores[index2].subject),
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(right: 5),
+                                                  child: OutlinedButton(
+                                                    child: Text(
+                                                      item.scores[index2].subject,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    style: OutlinedButton.styleFrom(
+                                                      primary: Color(0xFF53256E),
+                                                    ),
+                                                    onPressed: () async {
+                                                      subjectController.text = item.scores[index2].subject;
+
+                                                      String reslut = await showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext buildcontext) {
+                                                          return AlertDialog(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                                            ),
+                                                            title: Text('과목명 변경'),
+                                                            content: TextField(
+                                                              controller: subjectController,
+                                                              decoration: InputDecoration(
+                                                                  border: OutlineInputBorder(),
+                                                                  labelText: '과목명'
+                                                              ),
+                                                            ),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                                child: const Text('취소'),
+                                                                style: TextButton.styleFrom(
+                                                                  primary: Colors.red
+                                                                ),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context, 'OK');
+                                                                  setState(() {
+                                                                    item.scores[index2].subject = subjectController.text;
+                                                                  });
+                                                                },
+                                                                child: const Text('저장'),
+                                                                style: TextButton.styleFrom(
+                                                                    primary: Colors.blue
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                          // return AlertDialog(
+                                                          //   shape: RoundedRectangleBorder(
+                                                          //     borderRadius: BorderRadius.all(Radius.circular(20.0))
+                                                          //   ),
+                                                          //   title: Text('과목명 변경'),
+                                                          //   content: TextField(
+                                                          //     decoration: InputDecoration(
+                                                          //       border: OutlineInputBorder(),
+                                                          //       labelText: '과목명'
+                                                          //     ),
+                                                          //   ),
+                                                          //   actions: <Widget>[
+                                                          //     TextButton(
+                                                          //       onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                          //       child: const Text('Cancel'),
+                                                          //     ),
+                                                          //     TextButton(
+                                                          //       onPressed: () => Navigator.pop(context, 'OK'),
+                                                          //       child: const Text('OK'),
+                                                          //     ),
+                                                          //   ],
+                                                          // );
+                                                        }
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
                                               ),
                                               Expanded(
                                                 flex: 1,
-                                                child: Text(item.scores[index2].rank.toString()),
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(right: 5, left: 5),
+                                                  child: OutlinedButton(
+                                                    child: Text(item.scores[index2].rank.toString()),
+                                                    style: OutlinedButton.styleFrom(
+                                                      primary: Color(0xFF53256E),
+                                                    ),
+                                                    onPressed: () {
+
+                                                    },
+                                                  ),
+                                                ),
                                               ),
                                               Expanded(
                                                 flex: 1,
-                                                child: Text(item.scores[index2].point.toString()),
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(right: 5, left: 5),
+                                                  child: OutlinedButton(
+                                                    child: Text(item.scores[index2].point.toString()),
+                                                    style: OutlinedButton.styleFrom(
+                                                      primary: Color(0xFF53256E),
+                                                    ),
+                                                    onPressed: () {
+
+                                                    },
+                                                  ),
+                                                ),
                                               ),
                                               Expanded(
                                                 flex: 2,
-                                                child: Text(item.scores[index2].type.toString()),
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(right: 5, left: 5),
+                                                  child: OutlinedButton(
+                                                    child: Text(_type[item.scores[index2].type]),
+                                                    style: OutlinedButton.styleFrom(
+                                                      primary: Color(0xFF53256E),
+                                                    ),
+                                                    onPressed: () {
+
+                                                    },
+                                                  ),
+                                                ),
                                               ),
                                               Expanded(
                                                 flex: 1,
-                                                child: IconButton(
-                                                  padding: EdgeInsets.all(0),
-                                                  icon: Icon(Icons.delete_rounded),
-                                                  onPressed: () {
-                                                    SnackBarManager.showSnackBar(
-                                                        context,
-                                                        item.scores[index2].subject + ' 삭제', '확인',
-                                                        Duration(milliseconds: 1500), Colors.red
-                                                    );
-                                                    setState(() {
-                                                      item.scores.removeAt(index2);
-                                                    });
-                                                    _json_data.changeSemesterData(item.code, item.scores);
-                                                  },
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(left: 5),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.all(0),
+                                                    icon: Icon(
+                                                      Icons.delete_rounded,
+                                                      color: Color(0xFF53256E),
+                                                    ),
+                                                    onPressed: () {
+                                                      SnackBarManager.showSnackBar(
+                                                          context,
+                                                          item.scores[index2].subject + ' 삭제', '확인',
+                                                          Duration(milliseconds: 1500), Colors.red
+                                                      );
+                                                      setState(() {
+                                                        item.scores.removeAt(index2);
+                                                      });
+                                                      _json_data.changeSemesterData(item.code, item.scores);
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -174,7 +334,11 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                     ),
                                     label: Text('과목 추가하기'),
                                     onPressed: () {
-
+                                      setState(() {
+                                        SchoolScore value = SchoolScore(rank: 1, type: 0, point: 1, subject: "국어");
+                                        item.scores.add(value);
+                                      });
+                                      _json_data.changeSemesterData(item.code, item.scores);
                                     },
                                   ),
                                 ),

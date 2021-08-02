@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       home: MyaAppPage(),
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: Color(0xFF53256E),
       ),
     );
   }
