@@ -140,6 +140,16 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                                 child: IconButton(
                                                   padding: EdgeInsets.all(0),
                                                   icon: Icon(Icons.delete_rounded),
+                                                  onPressed: () {
+                                                    SnackBarManager.showSnackBar(
+                                                        context,
+                                                        item.scores[index2].subject + ' 삭제 눌림!', 'ok',
+                                                        Duration(seconds: 1), Colors.red
+                                                    );
+                                                    setState(() {
+                                                      item.scores.removeAt(index2);
+                                                    });
+                                                  },
                                                 ),
                                               ),
                                             ],
@@ -149,6 +159,24 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                     ),
                                   );
                                 },
+                              ),
+                            ),
+                            Container(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton.icon(
+                                    icon: Icon(Icons.add_rounded),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Color(0xFF53256E)
+                                    ),
+                                    label: Text('과목 추가하기'),
+                                    onPressed: () {
+
+                                    },
+                                  ),
+                                ),
                               ),
                             )
                           ],

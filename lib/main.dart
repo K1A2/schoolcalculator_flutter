@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: MyaAppPage(),
       theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
     );
   }

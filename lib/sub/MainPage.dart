@@ -101,7 +101,7 @@ class _MainStafulPage extends State<MainStafulPage> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            SnackBarManager.showSnackBar(context, "비율 조정 클릭", "확인");
+                            SnackBarManager.showSnackBar(context, "비율 조정 클릭", "확인", Duration(seconds: 1), Color(0xFF53256E));
                           },
                         )
                       ],
