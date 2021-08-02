@@ -143,12 +143,13 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                                   onPressed: () {
                                                     SnackBarManager.showSnackBar(
                                                         context,
-                                                        item.scores[index2].subject + ' 삭제 눌림!', 'ok',
-                                                        Duration(seconds: 1), Colors.red
+                                                        item.scores[index2].subject + ' 삭제', '확인',
+                                                        Duration(milliseconds: 1500), Colors.red
                                                     );
                                                     setState(() {
                                                       item.scores.removeAt(index2);
                                                     });
+                                                    _json_data.changeSemesterData(item.code, item.scores);
                                                   },
                                                 ),
                                               ),

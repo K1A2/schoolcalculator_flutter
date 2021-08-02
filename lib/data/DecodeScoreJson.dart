@@ -58,7 +58,7 @@ class DecodeScoreJsonData {
   List<SchoolScore> getScoreDataSemester(String semester) {
     var _jsonSemeseter = _json[semester];
     List<SchoolScore> _scores = [];
-    
+
     for (var j in _jsonSemeseter) {
       SchoolScore _s = SchoolScore(
           rank: int.parse(j['rank']),
@@ -69,5 +69,18 @@ class DecodeScoreJsonData {
     }
     
     return _scores;
+  }
+
+  changeSemesterData(String semester, List<SchoolScore> list) {
+    List _newList = [];
+    for (var i in list) {
+      int _rank = i.rank;
+      int _type = i.type;
+      int _point = i.point;
+      String _subject = i.subject;
+      _newList.add({"rank": "$_rank", "type": "$_type", "point": "$_point", "subject": "$_subject"});
+    }
+    _json[semester] = _newList;
+    // print(jsonEncode(_json).toString());
   }
 }
