@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'SchoolScore.dart';
 
 class DecodeScoreJsonData {
   final _socreData = '''{"11": [
@@ -54,5 +55,19 @@ class DecodeScoreJsonData {
     this._json = jsonDecode(_socreData);
   }
 
-
+  List<SchoolScore> getScoreDataSemester(String semester) {
+    var _jsonSemeseter = _json[semester];
+    List<SchoolScore> _scores = [];
+    
+    for (var j in _jsonSemeseter) {
+      SchoolScore _s = SchoolScore(
+          rank: int.parse(j['rank']),
+          type: int.parse(j['type']),
+          point: int.parse(j['point']),
+          subject: j['subject']);
+      _scores.add(_s);
+    }
+    
+    return _scores;
+  }
 }
