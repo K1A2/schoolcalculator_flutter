@@ -38,7 +38,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
   final double _bodySize = 50.0;
   final List<String> _type = ["국어","수학","영어","과학탐구","사회탐구","기타"];
   final List<Item> _data = [];
-  final DecodeScoreJsonData _json_data = DecodeScoreJsonData("");
+  final DecodeScoreJsonData _json_data = DecodeScoreJsonData();
   final subjectController = TextEditingController();
   List<ScrollController> _scrollController = [];
   bool _switch = false;
@@ -52,12 +52,19 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
   @override
   void initState() {
     super.initState();
-    _data.add(Item(code: '11', scores: _json_data.getScoreDataSemester('11'), index: 0, show: '1학년 1학기'));
-    _data.add(Item(code: '12', scores: _json_data.getScoreDataSemester('12'), index: 1, show: '1학년 2학기'));
-    _data.add(Item(code: '21', scores: _json_data.getScoreDataSemester('21'), index: 2, show: '2학년 1학기'));
-    _data.add(Item(code: '22', scores: _json_data.getScoreDataSemester('22'), index: 3, show: '2학년 2학기'));
-    _data.add(Item(code: '31', scores: _json_data.getScoreDataSemester('31'), index: 4, show: '3학년 1학기'));
-    _data.add(Item(code: '32', scores: _json_data.getScoreDataSemester('32'), index: 5, show: '3학년 2학기'));
+    final _semester = ["11", "12", "21", "22", "31", "32"];
+    for (int i = 0;i < _semester.length;i++) {
+      _json_data.getScoreDataSemester(_semester[i]).then((value) {
+        var _se2 = _semester[i].split("");
+        _data.add(Item(code: _semester[i],
+            scores: value,
+            index: i,
+            show: _se2[0] + '학년 ' + _se2[1] + '학기'));
+        setState(() {
+
+        });
+      });
+    }
 
     for (int i = 0;i < 6;i++) {
       _scrollController.add(ScrollController());

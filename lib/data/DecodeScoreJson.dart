@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'SchoolScore.dart';
+import 'ScoreDataIO.dart';
 
 class DecodeScoreJsonData {
   final _socreData = '''{"11": [
@@ -50,16 +51,22 @@ class DecodeScoreJsonData {
     ],
     "32": []}''';
   var _json;
+  ScoreDataIoManager _manager;
 
-  DecodeScoreJsonData(String json) {
-    this._json = jsonDecode(_socreData);
+  DecodeScoreJsonData() {
+    _manager = ScoreDataIoManager();
   }
 
-  List<SchoolScore> getScoreDataSemester(String semester) {
-    var _jsonSemeseter = _json[semester];
+  Future<List<SchoolScore>> getScoreDataSemester(String semester) async {
+    var _json = await _manager.readScores(semester);
+    if (_json == "error") {
+      print("error");
+      _json = '{"$semester": []}';
+    }
+    var _jsonSemeseter = jsonDecode(_json);
     List<SchoolScore> _scores = [];
 
-    for (var j in _jsonSemeseter) {
+    for (var j in _jsonSemeseter[semester]) {
       SchoolScore _s = SchoolScore(
           rank: int.parse(j['rank']),
           type: int.parse(j['type']),
@@ -67,7 +74,7 @@ class DecodeScoreJsonData {
           subject: j['subject']);
       _scores.add(_s);
     }
-    
+
     return _scores;
   }
 
@@ -80,7 +87,6 @@ class DecodeScoreJsonData {
       String _subject = i.subject;
       _newList.add({"rank": "$_rank", "type": "$_type", "point": "$_point", "subject": "$_subject"});
     }
-    _json[semester] = _newList;
-    // print(jsonEncode(_json).toString());
+    _manager.writeScores(semester, jsonEncode({"$semester": _newList}).toString());
   }
 }
