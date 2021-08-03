@@ -192,7 +192,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                                               _focusNode.addListener(_onSubjectFocusChange);
                                                               return AlertDialog(
                                                                 shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                                                    borderRadius: BorderRadius.all(Radius.circular(20.0))
                                                                 ),
                                                                 title: Text('과목명 변경'),
                                                                 content: TextField(
@@ -208,7 +208,12 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                                                     ),
                                                                     focusedBorder: OutlineInputBorder(
                                                                       borderSide: BorderSide(color: Color(0xFF53256E)),
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20.0))
                                                                     ),
+                                                                    enabledBorder: OutlineInputBorder(
+                                                                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                                                        borderSide: BorderSide(color: Colors.grey),
+                                                                    )
                                                                   ),
                                                                 ),
                                                                 actions: <Widget>[
@@ -270,7 +275,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                                               builder: (context4, setState2) {
                                                                 return AlertDialog(
                                                                   shape: RoundedRectangleBorder(
-                                                                      borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20.0))
                                                                   ),
                                                                   title: Text('과목 등급 변경'),
                                                                   content: NumberPicker(
@@ -344,7 +349,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                                               builder: (context4, setState2) {
                                                                 return AlertDialog(
                                                                   shape: RoundedRectangleBorder(
-                                                                      borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20.0))
                                                                   ),
                                                                   title: Text('과목 단위 변경'),
                                                                   content: NumberPicker(
@@ -408,8 +413,70 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                                     style: OutlinedButton.styleFrom(
                                                       primary: Color(0xFF53256E),
                                                     ),
-                                                    onPressed: () {
+                                                    onPressed: () async {
+                                                      var _typeNumeric = item.scores[index2].type;
 
+                                                      String reslut = await showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext buildcontext) {
+                                                            return StatefulBuilder(
+                                                              builder: (context4, setState2) {
+                                                                return AlertDialog(
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.all(Radius.circular(20.0))
+                                                                  ),
+                                                                  title: Text('과목 계열 변경'),
+                                                                  content: NumberPicker(
+                                                                    minValue: 0,
+                                                                    maxValue: 5,
+                                                                    value: _typeNumeric,
+                                                                    selectedTextStyle: TextStyle(
+                                                                        color: Color(0xFF53256E),
+                                                                        fontSize: 20
+                                                                    ),
+                                                                    haptics: true,
+                                                                    textMapper: (s) {
+                                                                      return _type[int.parse(s)];
+                                                                    },
+                                                                    infiniteLoop: true,
+                                                                    axis: Axis.vertical,
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius: BorderRadius.circular(16),
+                                                                        border: Border.all(color: Color(0xFF53256E))
+                                                                    ),
+                                                                    onChanged: (v) {
+                                                                      setState2(() {
+                                                                        _typeNumeric = v;
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                  actions: <Widget>[
+                                                                    TextButton(
+                                                                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                                      child: const Text('취소'),
+                                                                      style: TextButton.styleFrom(
+                                                                          primary: Colors.red
+                                                                      ),
+                                                                    ),
+                                                                    TextButton(
+                                                                      onPressed: () {
+                                                                        Navigator.pop(context, 'OK');
+                                                                        setState(() {
+                                                                          item.scores[index2].type = _typeNumeric;
+                                                                        });
+                                                                        _json_data.changeSemesterData(item.code, item.scores);
+                                                                      },
+                                                                      child: const Text('저장'),
+                                                                      style: TextButton.styleFrom(
+                                                                          primary: Colors.blue
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            );
+                                                          }
+                                                      );
                                                     },
                                                   ),
                                                 ),
