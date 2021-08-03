@@ -5,18 +5,21 @@ import '../data/DecodeScoreJson.dart';
 import '../widget/SnackManager.dart';
 import '../data/SchoolScore.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Item {
   Item({
     @required this.code,
     @required this.scores,
     @required this.show,
+    @required this.index,
     this.isExpanded = false,
   });
 
   String code;
   List<SchoolScore> scores;
   String show;
+  int index;
   bool isExpanded;
 }
 
@@ -34,20 +37,37 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
   final double _expandPaddingSize = 8.0;
   final double _bodySize = 50.0;
   final List<String> _type = ["국어","수학","영어","과학탐구","사회탐구","기타"];
-  bool _switch = false;
   final List<Item> _data = [];
   final DecodeScoreJsonData _json_data = DecodeScoreJsonData("");
   final subjectController = TextEditingController();
+  List<ScrollController> _scrollController = [];
+  bool _switch = false;
+  final String _switchSave = "switch";
+
+  Future<bool> getSwitchBool() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.getBool(_switchSave) ?? false;
+  }
 
   @override
   void initState() {
     super.initState();
-    _data.add(Item(code: '11', scores: _json_data.getScoreDataSemester('11'), show: '1학년 1학기'));
-    _data.add(Item(code: '12', scores: _json_data.getScoreDataSemester('12'), show: '1학년 2학기'));
-    _data.add(Item(code: '21', scores: _json_data.getScoreDataSemester('21'), show: '2학년 1학기'));
-    _data.add(Item(code: '22', scores: _json_data.getScoreDataSemester('22'), show: '2학년 2학기'));
-    _data.add(Item(code: '31', scores: _json_data.getScoreDataSemester('31'), show: '3학년 1학기'));
-    _data.add(Item(code: '32', scores: _json_data.getScoreDataSemester('32'), show: '3학년 2학기'));
+    _data.add(Item(code: '11', scores: _json_data.getScoreDataSemester('11'), index: 0, show: '1학년 1학기'));
+    _data.add(Item(code: '12', scores: _json_data.getScoreDataSemester('12'), index: 1, show: '1학년 2학기'));
+    _data.add(Item(code: '21', scores: _json_data.getScoreDataSemester('21'), index: 2, show: '2학년 1학기'));
+    _data.add(Item(code: '22', scores: _json_data.getScoreDataSemester('22'), index: 3, show: '2학년 2학기'));
+    _data.add(Item(code: '31', scores: _json_data.getScoreDataSemester('31'), index: 4, show: '3학년 1학기'));
+    _data.add(Item(code: '32', scores: _json_data.getScoreDataSemester('32'), index: 5, show: '3학년 2학기'));
+
+    for (int i = 0;i < 6;i++) {
+      _scrollController.add(ScrollController());
+    }
+
+    getSwitchBool().then((value) {
+      setState(() {
+        _switch = value;
+      });
+    });
   }
 
   @override
@@ -89,10 +109,12 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                       ),
                                       Switch(
                                         value: _switch,
-                                        onChanged: (bool isOn) {
+                                        onChanged: (bool isOn) async {
                                           setState(() {
                                             _switch = isOn;
                                           });
+                                          SharedPreferences _prefs = await SharedPreferences.getInstance();
+                                          _prefs.setBool(_switchSave, _switch);
                                         },
                                         activeColor: Color(0xFF652D87),
                                         activeTrackColor: Color(0xFF8743AD),
@@ -150,6 +172,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                               height:  _expandPaddingSize + _cardSize * item.scores.length < _size.height / 3 ?
                               _expandPaddingSize + _cardSize * item.scores.length : _size.height / 3,
                               child: ListView.builder(
+                                controller: _scrollController[item.index],
                                 padding: EdgeInsets.all(_expandPaddingSize),
                                 itemCount: item.scores.length,
                                 itemBuilder: (BuildContext context2, int index2) {
@@ -529,6 +552,8 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> {
                                       setState(() {
                                         SchoolScore value = SchoolScore(rank: 1, type: 0, point: 1, subject: "국어");
                                         item.scores.add(value);
+                                        var _scroll = _scrollController[item.index];
+                                        _scroll.animateTo(_scroll.position.maxScrollExtent + _cardSize, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
                                       });
                                       _json_data.changeSemesterData(item.code, item.scores);
                                     },

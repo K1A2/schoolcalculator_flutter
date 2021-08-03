@@ -59,7 +59,7 @@ class _MyaAppPage extends State<MyaAppPage> with SingleTickerProviderStateMixin 
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xFF484EA9),
+        selectedItemColor: Color(0xFF53256E),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             label: '메인화면',
