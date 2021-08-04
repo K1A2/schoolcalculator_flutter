@@ -8,7 +8,7 @@ class ScoreAnalyzePage extends StatefulWidget {
   }
 }
 
-class _ScoreAnalyzePage extends State<ScoreAnalyzePage> {
+class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveClientMixin<ScoreAnalyzePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -23,4 +23,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => false;
 }

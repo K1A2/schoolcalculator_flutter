@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/SnackManager.dart';
 
 class MainStafulPage extends StatefulWidget {
@@ -8,8 +9,18 @@ class MainStafulPage extends StatefulWidget {
   }
 }
 
-class _MainStafulPage extends State<MainStafulPage> {
+class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClientMixin<MainStafulPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _ratioSave = "scoreratio";
+  final _ratio = "1 1 1";
+
+  @override
+  bool get wantKeepAlive => false;
+
+  Future<String> getScoreRatio() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.getString(_ratioSave) ?? "1 1 1";
+  }
 
   @override
   Widget build(BuildContext context) {
