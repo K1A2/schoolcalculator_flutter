@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
         primaryColor: Color(0xFF53256E),
+        fontFamily: "SCFream"
       ),
     );
   }

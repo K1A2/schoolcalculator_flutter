@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/SnackManager.dart';
 
@@ -12,14 +13,24 @@ class MainStafulPage extends StatefulWidget {
 class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClientMixin<MainStafulPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _ratioSave = "scoreratio";
-  final _ratio = "1 1 1";
+  var _ratio = "1:1:1";
 
   @override
   bool get wantKeepAlive => false;
 
   Future<String> getScoreRatio() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    return _prefs.getString(_ratioSave) ?? "1 1 1";
+    return _prefs.getString(_ratioSave) ?? "1:1:1";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getScoreRatio().then((value) {
+      setState(() {
+        _ratio = value;
+      });
+    });
   }
 
   @override
@@ -99,7 +110,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "등급 반영 비율 1:1:1",
+                          "등급 반영 비율 " + _ratio,
                           style: TextStyle(
                               fontFamily: "SCFream",
                               fontWeight: FontWeight.w200,
@@ -112,8 +123,219 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            SnackBarManager.showSnackBar(context, "비율 조정 클릭", "확인", Duration(seconds: 1), Color(0xFF53256E));
+                            int _r1 = 1, _r2 = 1, _r3 = 1;
+                            getScoreRatio().then((value) {
+                              var _r = value.split(":");
+                              setState(() {
+                                _r1 = int.parse(_r[0]);
+                                _r2 = int.parse(_r[1]);
+                                _r3 = int.parse(_r[2]);
+                              });
+                            });
+                            showModalBottomSheet(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              backgroundColor: Colors.white,
+                              context: context,
+                              builder: (context2) {
+                                return SafeArea(
+                                  child: StatefulBuilder(
+                                    builder: (context3, setState3) {
+                                      return Container(
+                                        height: 360,
+                                        padding: EdgeInsets.all(20),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Center(
+                                              child: Text(
+                                                "등급 반영 비율 변경",
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontWeight: FontWeight.w500
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 20),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Center(
+                                                          child: Text("1학년"),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Center(
+                                                          child: Text("2학년"),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Center(
+                                                          child: Text("3학년"),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(top: 10),
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Expanded(
+                                                          flex: 1,
+                                                          child: Center(
+                                                            child: NumberPicker(
+                                                              value: _r1,
+                                                              minValue: 1,
+                                                              maxValue: 10,
+                                                              selectedTextStyle: TextStyle(
+                                                                  color: Color(0xFF53256E),
+                                                                  fontSize: 20
+                                                              ),
+                                                              haptics: true,
+                                                              onChanged: (v) {
+                                                                setState3(() {
+                                                                  _r1 = v;
+                                                                });
+                                                              },
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), topLeft: Radius.circular(20)),
+                                                                  border: Border.all(color: Color(0xFF53256E))
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          flex: 1,
+                                                          child: Center(
+                                                            child: NumberPicker(
+                                                              value: _r2,
+                                                              minValue: 1,
+                                                              maxValue: 10,
+                                                              selectedTextStyle: TextStyle(
+                                                                  color: Color(0xFF53256E),
+                                                                  fontSize: 20
+                                                              ),
+                                                              haptics: true,
+                                                              onChanged: (v) {
+                                                                setState3(() {
+                                                                  _r2 = v;
+                                                                });
+                                                              },
+                                                              decoration: BoxDecoration(
+                                                                  border: Border.all(color: Color(0xFF53256E))
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          flex: 1,
+                                                          child: Center(
+                                                            child: NumberPicker(
+                                                              value: _r3,
+                                                              minValue: 1,
+                                                              maxValue: 10,
+                                                              selectedTextStyle: TextStyle(
+                                                                  color: Color(0xFF53256E),
+                                                                  fontSize: 20
+                                                              ),
+                                                              haptics: true,
+                                                              onChanged: (v) {
+                                                                setState3(() {
+                                                                  _r3 = v;
+                                                                });
+                                                              },
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(20), topRight: Radius.circular(20)),
+                                                                  border: Border.all(color: Color(0xFF53256E))
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(top: 10),
+                                                    child: Text(_r1.toString() + " : " + _r2.toString() + " : " + _r3.toString()),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(top: 10),
+                                                    child: SizedBox(
+                                                      width: double.infinity,
+                                                      child: OutlinedButton(
+                                                        child: Text("비율 반영하기"),
+                                                        onPressed: () async {
+                                                          Navigator.pop(context);
+                                                          var _r = _r1.toString() + ":" + _r2.toString() + ":" + _r3.toString();
+                                                          setState(() {
+                                                            _ratio = _r;
+                                                          });
+                                                          SharedPreferences _prefs = await SharedPreferences.getInstance();
+                                                          _prefs.setString(_ratioSave, _r);
+                                                        },
+                                                        style: OutlinedButton.styleFrom(
+                                                            primary: Color(0xFF53256E)
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                            );
                           },
+                          // onPressed: () async {
+                          //   String reslut = await showDialog(
+                          //       context: context,
+                          //       builder: (BuildContext buildcontext) {
+                          //         return StatefulBuilder(
+                          //           builder: (context4, setState2) {
+                          //             return AlertDialog(
+                          //               shape: RoundedRectangleBorder(
+                          //                   borderRadius: BorderRadius.all(Radius.circular(20.0))
+                          //               ),
+                          //               title: Text('과목명 변경'),
+                          //               content: Text('ddsds'),
+                          //               actions: <Widget>[
+                          //                 TextButton(
+                          //                   onPressed: () {
+                          //                     Navigator.pop(context, 'Cancel');
+                          //                   },
+                          //                   child: const Text('취소'),
+                          //                   style: TextButton.styleFrom(
+                          //                       primary: Colors.red
+                          //                   ),
+                          //                 ),
+                          //                 TextButton(
+                          //                   onPressed: () {
+                          //                     Navigator.pop(context, 'OK');
+                          //                   },
+                          //                   child: const Text('저장'),
+                          //                   style: TextButton.styleFrom(
+                          //                       primary: Colors.blue
+                          //                   ),
+                          //                 ),
+                          //               ],
+                          //             );
+                          //           },
+                          //         );
+                          //       }
+                          //   );
+                          // },
                         )
                       ],
                     )

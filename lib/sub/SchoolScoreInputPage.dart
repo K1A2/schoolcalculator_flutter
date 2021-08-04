@@ -321,7 +321,6 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                       minValue: 1,
                                                                       maxValue: 9,
                                                                       value: _rank,
-                                                                      infiniteLoop: true,
                                                                       haptics: true,
                                                                       selectedTextStyle: TextStyle(
                                                                           color: Color(0xFF53256E),
@@ -401,7 +400,6 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                           fontSize: 20
                                                                       ),
                                                                       haptics: true,
-                                                                      infiniteLoop: true,
                                                                       axis: Axis.vertical,
                                                                       decoration: BoxDecoration(
                                                                           borderRadius: BorderRadius.circular(16),
@@ -479,7 +477,6 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                       textMapper: (s) {
                                                                         return _type[int.parse(s)];
                                                                       },
-                                                                      infiniteLoop: true,
                                                                       axis: Axis.vertical,
                                                                       decoration: BoxDecoration(
                                                                           borderRadius: BorderRadius.circular(16),
