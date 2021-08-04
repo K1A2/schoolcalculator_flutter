@@ -21,7 +21,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
   DecodeScoreJsonData _scoreJson;
   SchoolScoreCalculator _calculator;
   var _ratio = "1:1:1";
-  var _allGrade = 0.0;
+  var _allGrade = 0.0, _1Grade = 0.0, _2Grade = 0.0, _3Grade = 0.0;
 
   @override
   bool get wantKeepAlive => false;
@@ -36,11 +36,15 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
     return _prefs.getBool(_switchSave) ?? false;
   }
 
-  double getAllGradeCal() {
+  getAllGradeCal() {
     _scoreJson.getAllScoreDataSemester().then((value) {
       getSwitchBool().then((value2) {
         setState(() {
-          _allGrade = _calculator.getAllGrade(value, _ratio, value2);
+          _allGrade = _calculator.getAllGrade([...value], _ratio, value2);
+          final _d = _calculator.getNGrade([...value], value2);
+          _1Grade = _d[0];
+          _2Grade = _d[1];
+          _3Grade = _d[2];
         });
       });
     });
@@ -408,7 +412,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                               color: Colors.black),
                                           textAlign: TextAlign.center,
                                         ),
-                                        Text("3.78",
+                                        Text(_1Grade.toStringAsFixed(2),
                                             style: TextStyle(
                                                 fontFamily: "SCFream",
                                                 fontWeight: FontWeight.w300,
@@ -431,7 +435,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                                 fontSize: _cardScoreSize2,
                                                 color: Colors.black),
                                             textAlign: TextAlign.center),
-                                        Text("3.78",
+                                        Text(_2Grade.toStringAsFixed(2),
                                             style: TextStyle(
                                                 fontFamily: "SCFream",
                                                 fontWeight: FontWeight.w300,
@@ -454,7 +458,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                                 fontSize: _cardScoreSize2,
                                                 color: Colors.black),
                                             textAlign: TextAlign.center),
-                                        Text("3.78",
+                                        Text(_3Grade.toStringAsFixed(2),
                                             style: TextStyle(
                                                 fontFamily: "SCFream",
                                                 fontWeight: FontWeight.w300,

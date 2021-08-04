@@ -5,6 +5,32 @@ import 'SchoolScore.dart';
 
 class SchoolScoreCalculator {
 
+  List<double> getNGrade(List<List<SchoolScore>> data, bool grade32) {
+    if (grade32) {
+      data = [data[0] + data[1], data[2] + data[3], data[4] + data[5]];
+    } else {
+      data = [data[0] + data[1], data[2] + data[3], data[4]];
+    }
+
+    List<double> _r = [];
+    for (var f in data) {
+      double _gp = 0.0;
+      double _p = 0.0;
+      for (var j in f) {
+        _gp += j.point * j.rank;
+        _p += j.point;
+      }
+
+      var _s = _gp / _p;
+      if (_s.isNaN) {
+        _s = 0;
+      }
+      _r.add(_s);
+    }
+
+    return _r;
+  }
+
   double getAllGrade(List<List<SchoolScore>> data, String ratio, bool grade32) {
     var _s = 0.0;
 
