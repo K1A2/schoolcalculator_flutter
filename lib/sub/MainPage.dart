@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
+import '../data/DecodeScoreJson.dart';
+import '../data/SchoolScoreCalculator.dart';
+import '../data/SchoolScore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/SnackManager.dart';
 
@@ -13,7 +16,12 @@ class MainStafulPage extends StatefulWidget {
 class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClientMixin<MainStafulPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _ratioSave = "scoreratio";
+  final String _switchSave = "switch";
+
+  DecodeScoreJsonData _scoreJson;
+  SchoolScoreCalculator _calculator;
   var _ratio = "1:1:1";
+  var _allGrade = 0.0;
 
   @override
   bool get wantKeepAlive => false;
@@ -21,6 +29,21 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
   Future<String> getScoreRatio() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     return _prefs.getString(_ratioSave) ?? "1:1:1";
+  }
+
+  Future<bool> getSwitchBool() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.getBool(_switchSave) ?? false;
+  }
+
+  double getAllGradeCal() {
+    _scoreJson.getAllScoreDataSemester().then((value) {
+      getSwitchBool().then((value2) {
+        setState(() {
+          _allGrade = _calculator.getAllGrade(value, _ratio, value2);
+        });
+      });
+    });
   }
 
   @override
@@ -31,6 +54,9 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
         _ratio = value;
       });
     });
+    _scoreJson = DecodeScoreJsonData();
+    _calculator = SchoolScoreCalculator();
+    getAllGradeCal();
   }
 
   @override
@@ -87,7 +113,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                       ),
                     ),
                     Text(
-                      "3.78",
+                      _allGrade.toStringAsFixed(2),
                       style: TextStyle(
                           fontFamily: "SCFream",
                           fontWeight: FontWeight.w300,
@@ -274,11 +300,15 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                                         onPressed: () async {
                                                           Navigator.pop(context);
                                                           var _r = _r1.toString() + ":" + _r2.toString() + ":" + _r3.toString();
-                                                          setState(() {
-                                                            _ratio = _r;
-                                                          });
                                                           SharedPreferences _prefs = await SharedPreferences.getInstance();
                                                           _prefs.setString(_ratioSave, _r);
+
+                                                          _scoreJson.getAllScoreDataSemester().then((value) {
+                                                            setState(() {
+                                                              _ratio = _r;
+                                                              getAllGradeCal();
+                                                            });
+                                                          });
                                                         },
                                                         style: OutlinedButton.styleFrom(
                                                             primary: Color(0xFF53256E)
@@ -298,44 +328,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                               }
                             );
                           },
-                          // onPressed: () async {
-                          //   String reslut = await showDialog(
-                          //       context: context,
-                          //       builder: (BuildContext buildcontext) {
-                          //         return StatefulBuilder(
-                          //           builder: (context4, setState2) {
-                          //             return AlertDialog(
-                          //               shape: RoundedRectangleBorder(
-                          //                   borderRadius: BorderRadius.all(Radius.circular(20.0))
-                          //               ),
-                          //               title: Text('과목명 변경'),
-                          //               content: Text('ddsds'),
-                          //               actions: <Widget>[
-                          //                 TextButton(
-                          //                   onPressed: () {
-                          //                     Navigator.pop(context, 'Cancel');
-                          //                   },
-                          //                   child: const Text('취소'),
-                          //                   style: TextButton.styleFrom(
-                          //                       primary: Colors.red
-                          //                   ),
-                          //                 ),
-                          //                 TextButton(
-                          //                   onPressed: () {
-                          //                     Navigator.pop(context, 'OK');
-                          //                   },
-                          //                   child: const Text('저장'),
-                          //                   style: TextButton.styleFrom(
-                          //                       primary: Colors.blue
-                          //                   ),
-                          //                 ),
-                          //               ],
-                          //             );
-                          //           },
-                          //         );
-                          //       }
-                          //   );
-                          // },
                         )
                       ],
                     )
@@ -382,7 +374,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                           color: Colors.black),
                                     ),
                                     Text(
-                                      "3.78",
+                                      _allGrade.toStringAsFixed(2),
                                       style: TextStyle(
                                           fontFamily: "SCFream",
                                           fontWeight: FontWeight.w300,
