@@ -127,7 +127,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                       child: Text(
-                        "* 아직 입력되지 않은 학기 가장 최근 학기 성적으로 대체됩니다.",
+                        "* 아직 입력되지 않은 학년은 가장 최근 학년 성적으로 대체됩니다.",
                         style: TextStyle(
                             fontFamily: "SCFream",
                             fontWeight: FontWeight.w200,
@@ -474,6 +474,33 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                           ],
                         ),
                       )),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "성적 분석",
+                            style: TextStyle(
+                                fontFamily: "SCFream",
+                                fontWeight: FontWeight.w500,
+                                fontSize: _cardTitleSize,
+                                color: Colors.black
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 )
               ]))
         ],
