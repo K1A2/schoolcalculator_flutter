@@ -3,6 +3,8 @@ import 'package:numberpicker/numberpicker.dart';
 import '../data/DecodeScoreJson.dart';
 import '../data/SchoolScoreCalculator.dart';
 import '../data/SchoolScore.dart';
+import 'dart:math';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/SnackManager.dart';
 
@@ -22,6 +24,11 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
   SchoolScoreCalculator _calculator;
   var _ratio = "1:1:1";
   var _allGrade = 0.0, _1Grade = 0.0, _2Grade = 0.0, _3Grade = 0.0;
+  List<FlSpot> _gradeSemester = [];
+  List<Color> gradientColors = [
+    const Color(0xFF484EA9),
+    const Color(0xFF53256E),
+  ];
 
   @override
   bool get wantKeepAlive => false;
@@ -45,6 +52,15 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
           _1Grade = _d[0];
           _2Grade = _d[1];
           _3Grade = _d[2];
+
+          var _c = 1.0;
+          for (var i in [...value]) {
+            if (_c == 6.0 && !value2) continue;
+            var a = double.parse((10 - _calculator.getGrafe(i)).abs().toStringAsFixed(2));
+            print(a);
+            _gradeSemester.add(FlSpot(_c, a));
+            _c++;
+          }
         });
       });
     });
@@ -99,10 +115,8 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                     gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.topRight,
-                        colors: [
-                          Color(0xFF484EA9),
-                          Color(0xFF53256E),
-                        ])),
+                        colors: gradientColors
+                    )),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -497,6 +511,133 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                             ),
                             textAlign: TextAlign.left,
                           ),
+                          AspectRatio(
+                            aspectRatio: 3 / 2,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                              child: Container(
+                                child: LineChart(
+                                  LineChartData(
+                                      gridData: FlGridData(
+                                          getDrawingHorizontalLine: (value) {
+                                            return FlLine(
+                                                color: Colors.black12,
+                                                strokeWidth: 1
+                                            );
+                                          },
+                                          getDrawingVerticalLine: (value) {
+                                            return FlLine(
+                                              color: Color(0xff37434d),
+                                              strokeWidth: 5,
+                                            );
+                                          }
+                                      ),
+                                      titlesData: FlTitlesData(
+                                        show: true,
+                                        leftTitles: SideTitles(
+                                          showTitles: true,
+                                          getTextStyles: (style) {
+                                            return TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            );
+                                          },
+                                          getTitles: (value) {
+                                            print('leftTitles $value');
+                                            switch (value.toInt()) {
+                                              case 1:
+                                                return '9등급';
+                                              case 3:
+                                                return '7등급';
+                                              case 5:
+                                                return '5등급';
+                                              case 7:
+                                                return '3등급';
+                                              case 9:
+                                                return '1등급';
+                                            }
+                                            return '';
+                                          },
+                                          reservedSize: 28,
+                                          margin: 12,
+                                        ),
+                                        bottomTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 22,
+                                          getTextStyles: (v) {
+                                            return TextStyle(
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12
+                                            );
+                                          },
+                                          getTitles: (value) {
+                                            print('bottomTitles $value');
+                                            switch (value.toInt()) {
+                                              case 1:
+                                                return '1-1';
+                                              case 2:
+                                                return '1-2';
+                                              case 3:
+                                                return '2-1';
+                                              case 4:
+                                                return '2-2';
+                                              case 5:
+                                                return '3-1';
+                                              case 6:
+                                                return '3-2';
+                                            }
+                                            return '';
+                                          },
+                                          margin: 8,
+                                        ),
+                                      ),
+                                      borderData: FlBorderData(
+                                        show: true,
+                                        border: Border.all(color: Color(0xff37434d), width: 1),
+                                      ),
+                                      lineBarsData: [LineChartBarData(
+                                        isCurved: true,
+                                        barWidth: 5,
+                                        isStrokeCapRound: true,
+                                        spots: _gradeSemester,
+                                        dotData: FlDotData(
+                                          show: true,
+                                        ),
+                                        colors: gradientColors,
+                                        belowBarData: BarAreaData(
+                                          show: true,
+                                          colors: gradientColors.map((color) => color.withOpacity(0.3)).toList()
+                                        ),
+                                        curveSmoothness: 0.5,
+                                      )],
+                                      minX: 1,
+                                      maxX: 6,
+                                      minY: 1,
+                                      maxY: 9,
+                                    lineTouchData: LineTouchData(
+                                      touchTooltipData: LineTouchTooltipData(
+                                        getTooltipItems: (touchedSpots) {
+                                          return touchedSpots.map((touchedSpot) {
+                                            return LineTooltipItem(
+                                                (10 - touchedSpot.y).toStringAsFixed(2),
+                                                TextStyle(
+                                                  color: touchedSpot.bar.colors[0],
+                                                  fontWeight: FontWeight.bold),
+                                            );
+                                          }).toList();
+                                        },
+                                        tooltipBgColor: Colors.black.withOpacity(0.05)
+                                      )
+                                    )
+                                  ),
+                                  swapAnimationDuration: Duration(milliseconds: 500), // Optional
+                                  swapAnimationCurve: Curves.linear,
+                                ),
+                              ),
+                            )
+                          )
                         ],
                       ),
                     ),
