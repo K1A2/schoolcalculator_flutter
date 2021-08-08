@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:path/path.dart';
 import '../data/DecodeScoreJson.dart';
 import '../data/SchoolScoreCalculator.dart';
 import '../data/SchoolScore.dart';
 import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import '../widget/SnackManager.dart';
 
 class MainStafulPage extends StatefulWidget {
@@ -25,6 +28,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
   var _ratio = "1:1:1";
   var _allGrade = 0.0, _1Grade = 0.0, _2Grade = 0.0, _3Grade = 0.0;
   List<FlSpot> _gradeSemester = [];
+  List<List<double>> _gradeSemesterNum = [];
   List<Color> gradientColors = [
     const Color(0xFF484EA9),
     const Color(0xFF53256E),
@@ -54,13 +58,21 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
           _3Grade = _d[2];
 
           var _c = 1.0;
+          List<double> _l = [];
           for (var i in [...value]) {
+            var _n = _calculator.getGrafe(i);
+            _l.add(_n);
             if (_c == 6.0 && !value2) continue;
-            var a = double.parse((10 - _calculator.getGrafe(i)).abs().toStringAsFixed(2));
-            print(a);
-            _gradeSemester.add(FlSpot(_c, a));
-            _c++;
+            if (i.length == 0) {
+              _c++;
+              continue;
+            } else {
+              var a = double.parse((10 - _n).abs().toStringAsFixed(2));
+              _gradeSemester.add(FlSpot(_c, a));
+              _c++;
+            }
           }
+          _gradeSemesterNum = [[_l[0], _l[1]], [_l[2], _l[3]], [_l[4], _l[5]]];
         });
       });
     });
@@ -403,12 +415,8 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              child: Container(
-                                height: 0.5,
-                                color: Colors.black,
-                              ),
+                            Divider(
+                              color: Colors.black,
                             ),
                             Row(
                               children: [
@@ -514,7 +522,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                           AspectRatio(
                             aspectRatio: 3 / 2,
                             child: Padding(
-                              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                              padding: EdgeInsets.only(top: 20, left: 10, right: 10),
                               child: Container(
                                 child: LineChart(
                                   LineChartData(
@@ -544,7 +552,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                             );
                                           },
                                           getTitles: (value) {
-                                            print('leftTitles $value');
                                             switch (value.toInt()) {
                                               case 1:
                                                 return '9등급';
@@ -573,7 +580,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                             );
                                           },
                                           getTitles: (value) {
-                                            print('bottomTitles $value');
                                             switch (value.toInt()) {
                                               case 1:
                                                 return '1-1';
@@ -642,6 +648,113 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                       ),
                     ),
                   ),
+                ),
+                Padding(
+                  // padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  padding: EdgeInsets.zero,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      height: 170.0,
+                      autoPlay: true,
+                      viewportFraction: 0.9,
+                      autoPlayInterval: Duration(seconds: 3),
+                    ),
+                    items: _gradeSemesterNum.map((i) {
+                      return Builder(
+                          builder: (context1) {
+                            return Container(
+                              width: _size.width - 10,
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Card(
+                                child: Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                       (_gradeSemesterNum.indexOf(i) + 1).toString() + "학년 성적",
+                                        style: TextStyle(
+                                            fontFamily: "SCFream",
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: _cardTitleSize - 5,
+                                            color: Colors.black
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: Container(
+                                            child: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Expanded(
+                                                        child: Align(
+                                                          child: Text(
+                                                            "1학기",
+                                                            style: TextStyle(
+                                                              fontSize: 20
+                                                            ),
+                                                          ),
+                                                          alignment: Alignment.bottomCenter,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          i[0].toStringAsFixed(2),
+                                                          style: TextStyle(
+                                                              fontSize: 18
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                VerticalDivider(
+                                                  color: Colors.black,
+                                                ),
+                                                Expanded(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Expanded(
+                                                        child: Align(
+                                                          child: Text(
+                                                            "2학기",
+                                                            style: TextStyle(
+                                                                fontSize: 20
+                                                            ),
+                                                          ),
+                                                          alignment: Alignment.bottomCenter,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          i[1].toStringAsFixed(2),
+                                                          style: TextStyle(
+                                                              fontSize: 18
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ),
+                            );
+                          }
+                      );
+                    }).toList(),
+                  )
                 )
               ]))
         ],
