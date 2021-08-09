@@ -30,6 +30,43 @@ class DecodeScoreJsonData {
     return _scores;
   }
 
+  Future<dynamic> getAnalyzData() async {
+    final _semester = ["11", "12", "21", "22", "31", "32"];
+    List<List<SchoolScore>> _datas = [];
+    List<List<List<SchoolScore>>> _typeDatas = [
+      [[], [], [], [], [], []],
+      [[], [], [], [], [], []],
+      [[], [], [], [], [], []],
+      [[], [], [], [], [], []],
+      [[], [], [], [], [], []],
+      [[], [], [], [], [], []]];
+
+    var _i = 0;
+    for (var semester in _semester) {
+      var _json = await _manager.readScores(semester);
+      if (_json == "error") {
+        print("error");
+        _json = '{"$semester": []}';
+      }
+      var _jsonSemeseter = jsonDecode(_json);
+      List<SchoolScore> _scores = [];
+
+      for (var j in _jsonSemeseter[semester]) {
+        SchoolScore _s = SchoolScore(
+            rank: int.parse(j['rank']),
+            type: int.parse(j['type']),
+            point: int.parse(j['point']),
+            subject: j['subject']);
+        _scores.add(_s);
+        _typeDatas[_i][_s.type].add(_s);
+      }
+      _datas.add(_scores);
+      _i++;
+    }
+
+    return [_datas, _typeDatas];
+  }
+
   Future<List<List<SchoolScore>>> getAllScoreDataSemester() async {
     final _semester = ["11", "12", "21", "22", "31", "32"];
     List<List<SchoolScore>> _datas = [];

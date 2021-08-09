@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:path/path.dart';
 import '../data/DecodeScoreJson.dart';
 import '../data/SchoolScoreCalculator.dart';
-import '../data/SchoolScore.dart';
-import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../widget/SnackManager.dart';
 
 class MainStafulPage extends StatefulWidget {
   @override
@@ -96,7 +92,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
     Size _size = MediaQuery.of(context).size;
     double _cardTitleSize = 27.0;
     double _cardScoreSize = 23.0;
-    double _cardScoreSize2 = 20.0;
 
     return Scaffold(
       body: CustomScrollView(
@@ -420,77 +415,9 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                             ),
                             Row(
                               children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "1학년\n평균 등급",
-                                          style: TextStyle(
-                                              fontFamily: "SCFream",
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: _cardScoreSize2,
-                                              color: Colors.black),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text(_1Grade.toStringAsFixed(2),
-                                            style: TextStyle(
-                                                fontFamily: "SCFream",
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: _cardScoreSize2,
-                                                color: Colors.black),
-                                            textAlign: TextAlign.center)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        Text("2학년\n평균 등급",
-                                            style: TextStyle(
-                                                fontFamily: "SCFream",
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: _cardScoreSize2,
-                                                color: Colors.black),
-                                            textAlign: TextAlign.center),
-                                        Text(_2Grade.toStringAsFixed(2),
-                                            style: TextStyle(
-                                                fontFamily: "SCFream",
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: _cardScoreSize2,
-                                                color: Colors.black),
-                                            textAlign: TextAlign.center)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        Text("3학년\n평균 등급",
-                                            style: TextStyle(
-                                                fontFamily: "SCFream",
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: _cardScoreSize2,
-                                                color: Colors.black),
-                                            textAlign: TextAlign.center),
-                                        Text(_3Grade.toStringAsFixed(2),
-                                            style: TextStyle(
-                                                fontFamily: "SCFream",
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: _cardScoreSize2,
-                                                color: Colors.black),
-                                            textAlign: TextAlign.center)
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                _topCardScores(1, _1Grade),
+                                _topCardScores(2, _2Grade),
+                                _topCardScores(3, _3Grade),
                               ],
                             )
                           ],
@@ -601,7 +528,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                       ),
                                       borderData: FlBorderData(
                                         show: true,
-                                        border: Border.all(color: Color(0xff37434d), width: 1),
+                                        border: Border.all(color: Colors.black54, width: 1),
                                       ),
                                       lineBarsData: [LineChartBarData(
                                         isCurved: true,
@@ -688,59 +615,11 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                           child: Container(
                                             child: Row(
                                               children: <Widget>[
-                                                Expanded(
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      Expanded(
-                                                        child: Align(
-                                                          child: Text(
-                                                            "1학기",
-                                                            style: TextStyle(
-                                                              fontSize: 20
-                                                            ),
-                                                          ),
-                                                          alignment: Alignment.bottomCenter,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          i[0].toStringAsFixed(2),
-                                                          style: TextStyle(
-                                                              fontSize: 18
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
+                                                _pageBottomLayout(1, i[0]),
                                                 VerticalDivider(
                                                   color: Colors.black,
                                                 ),
-                                                Expanded(
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      Expanded(
-                                                        child: Align(
-                                                          child: Text(
-                                                            "2학기",
-                                                            style: TextStyle(
-                                                                fontSize: 20
-                                                            ),
-                                                          ),
-                                                          alignment: Alignment.bottomCenter,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          i[1].toStringAsFixed(2),
-                                                          style: TextStyle(
-                                                              fontSize: 18
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
+                                                _pageBottomLayout(2, i[1]),
                                               ],
                                             ),
                                           ),
@@ -757,6 +636,62 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                   )
                 )
               ]))
+        ],
+      ),
+    );
+  }
+
+  Expanded _topCardScores(int n, double score) {
+    return Expanded(
+      flex: 1,
+      child: Center(
+        child: Column(
+          children: [
+            Text(
+              "$n학년\n평균 등급",
+              style: TextStyle(
+                  fontFamily: "SCFream",
+                  fontWeight: FontWeight.w300,
+                  fontSize: 20,
+                  color: Colors.black),
+              textAlign: TextAlign.center,
+            ),
+            Text(score.toStringAsFixed(2),
+                style: TextStyle(
+                    fontFamily: "SCFream",
+                    fontWeight: FontWeight.w300,
+                    fontSize: 20,
+                    color: Colors.black),
+                textAlign: TextAlign.center)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded _pageBottomLayout(int n, double score) {
+    return Expanded(
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: Align(
+              child: Text(
+                "$n학기",
+                style: TextStyle(
+                    fontSize: 20
+                ),
+              ),
+              alignment: Alignment.bottomCenter,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              score.toStringAsFixed(2),
+              style: TextStyle(
+                  fontSize: 18
+              ),
+            ),
+          )
         ],
       ),
     );
