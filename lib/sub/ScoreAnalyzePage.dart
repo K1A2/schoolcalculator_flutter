@@ -19,6 +19,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
   List<List<double>> _typeScores = [[], [], [], [], [], []];
   List<Color> _typeGraphColors = [Colors.red, Colors.blue, Colors.purple, Colors.orange, Colors.amber, Colors.green];
   List<bool> _typeShow = [true, true, true, false, false, false];
+  final List<String> _type = ["국어","수학","영어","과학탐구","사회탐구","기타"];
 
   DecodeScoreJsonData _scoreJson;
   SchoolScoreCalculator _calculator;
@@ -39,7 +40,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
             if (_data != 0) {
               _data = double.parse((10 - _data).abs().toStringAsFixed(2));
             }
-            _inputData.add(BarChartRodData(y: _data, width: 4, colors: [_typeGraphColors[j]]));
+            _inputData.add(BarChartRodData(y: _data, width: 4.5, colors: [_typeGraphColors[j]]));
           } else {
             continue;
           }
@@ -70,14 +71,12 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
 
       var _n = 0;
       for (var i in _scores[1] as List<List<List<SchoolScore>>>) {
-        var _m = 0;
         for (var j in i) {
           if (j.length == 0) {
             _typeScores[_n].add(0.0);
           } else {
             _typeScores[_n].add(_calculator.getGrafe(j));
           }
-          _m++;
         }
         _n++;
       }
@@ -91,72 +90,6 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
     _scoreJson = DecodeScoreJsonData();
     _calculator = SchoolScoreCalculator();
     getAllGradeCal();
-    // showingBarGroups.add(BarChartGroupData(
-    //   x:1,
-    //   barRods: [
-    //     BarChartRodData(y: 9, width: 4, colors: [Colors.red]),
-    //     BarChartRodData(y: 2, width: 4, colors: [Colors.blue]),
-    //     BarChartRodData(y: 3, width: 4, colors: [Colors.purple]),
-    //     BarChartRodData(y: 3, width: 4, colors: [Colors.orange]),
-    //     BarChartRodData(y: 4.3, width: 4, colors: [Colors.amber]),
-    //     BarChartRodData(y: 1, width: 4, colors: [Colors.green]),
-    //   ]
-    // ));
-    // showingBarGroups.add(BarChartGroupData(
-    //   x:2,
-    //   barRods: [
-    //     BarChartRodData(y: 3, width: 4, colors: [Colors.red]),
-    //     BarChartRodData(y: 2.2, width: 4, colors: [Colors.blue]),
-    //     BarChartRodData(y: 4.5, width: 4, colors: [Colors.purple]),
-    //     BarChartRodData(y: 5.56, width: 4, colors: [Colors.orange]),
-    //     BarChartRodData(y: 4.3, width: 4, colors: [Colors.amber]),
-    //     BarChartRodData(y: 5.12, width: 4, colors: [Colors.green]),
-    //   ]
-    // ));
-    // showingBarGroups.add(BarChartGroupData(
-    //   x:3,
-    //   barRods: [
-    //     BarChartRodData(y: 3, width: 4, colors: [Colors.red]),
-    //     BarChartRodData(y: 2.2, width: 4, colors: [Colors.blue]),
-    //     BarChartRodData(y: 4.5, width: 4, colors: [Colors.purple]),
-    //     BarChartRodData(y: 5.56, width: 4, colors: [Colors.orange]),
-    //     BarChartRodData(y: 4.3, width: 4, colors: [Colors.amber]),
-    //     BarChartRodData(y: 5.12, width: 4, colors: [Colors.green]),
-    //   ]
-    // ));
-    // showingBarGroups.add(BarChartGroupData(
-    //   x:4,
-    //   barRods: [
-    //     BarChartRodData(y: 3, width: 4, colors: [Colors.red]),
-    //     BarChartRodData(y: 2.2, width: 4, colors: [Colors.blue]),
-    //     BarChartRodData(y: 4.5, width: 4, colors: [Colors.purple]),
-    //     BarChartRodData(y: 5.56, width: 4, colors: [Colors.orange]),
-    //     BarChartRodData(y: 4.3, width: 4, colors: [Colors.amber]),
-    //     BarChartRodData(y: 5.12, width: 4, colors: [Colors.green]),
-    //   ]
-    // ));
-    // showingBarGroups.add(BarChartGroupData(
-    //   x:5,
-    //   barRods: [
-    //     BarChartRodData(y: 3, width: 4, colors: [Colors.red]),
-    //     BarChartRodData(y: 2.2, width: 4, colors: [Colors.blue]),
-    //     BarChartRodData(y: 4.5, width: 4, colors: [Colors.purple]),
-    //     BarChartRodData(y: 5.56, width: 4, colors: [Colors.orange]),
-    //     BarChartRodData(y: 4.3, width: 4, colors: [Colors.amber]),
-    //     BarChartRodData(y: 5.12, width: 4, colors: [Colors.green]),
-    //   ]
-    // ));
-    // showingBarGroups.add(BarChartGroupData(
-    //   x:6,
-    //   barRods: [
-    //     BarChartRodData(y: 3, width: 4, colors: [Colors.red]),
-    //     BarChartRodData(y: 2.2, width: 4, colors: [Colors.blue]),
-    //     BarChartRodData(y: 4.5, width: 4, colors: [Colors.purple]),
-    //     BarChartRodData(y: 5.56, width: 4, colors: [Colors.orange]),
-    //     BarChartRodData(y: 4.3, width: 4, colors: [Colors.amber]),
-    //     BarChartRodData(y: 5.12, width: 4, colors: [Colors.green]),
-    //   ]
-    // ));
   }
 
   @override
@@ -331,7 +264,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "종합 성적",
+                        "분야별 성적",
                         style: TextStyle(
                             fontFamily: "SCFream",
                             fontWeight: FontWeight.w500,
@@ -427,6 +360,19 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                   barGroups: showingBarGroups,
                                   minY: 1,
                                   maxY: 9,
+                                  barTouchData: BarTouchData(
+                                    touchTooltipData: BarTouchTooltipData(
+                                      getTooltipItem:  (group, groupIndex, rod, rodIndex) {
+                                        return BarTooltipItem(
+                                          _type[rodIndex] + "\n" + (10 - rod.y).toStringAsFixed(2),
+                                          TextStyle(
+                                              color: rod.colors[0],
+                                              fontWeight: FontWeight.bold),
+                                        );
+                                      },
+                                      // tooltipBgColor: Colors.black.withOpacity(0.05)
+                                    )
+                                  )
                                 ),
                                 swapAnimationDuration: Duration(milliseconds: 500), // Optional
                                 swapAnimationCurve: Curves.linear,
@@ -542,7 +488,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                   )
               )
             ),
-          )
+          ),
         ],
       )
     );
