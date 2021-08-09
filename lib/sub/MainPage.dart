@@ -3,9 +3,11 @@ import 'package:flutter/rendering.dart';
 import 'package:numberpicker/numberpicker.dart';
 import '../data/DecodeScoreJson.dart';
 import '../data/SchoolScoreCalculator.dart';
+import '../SettingPage.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../widget/SnackManager.dart';
 
 class MainStafulPage extends StatefulWidget {
   @override
@@ -45,31 +47,34 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
 
   getAllGradeCal() {
     _scoreJson.getAllScoreDataSemester().then((value) {
+      _gradeSemester = [];
       getSwitchBool().then((value2) {
-        setState(() {
-          _allGrade = _calculator.getAllGrade([...value], _ratio, value2);
-          final _d = _calculator.getNGrade([...value], value2);
-          _1Grade = _d[0];
-          _2Grade = _d[1];
-          _3Grade = _d[2];
+        if (mounted) {
+          setState(() {
+            _allGrade = _calculator.getAllGrade([...value], _ratio, value2);
+            final _d = _calculator.getNGrade([...value], value2);
+            _1Grade = _d[0];
+            _2Grade = _d[1];
+            _3Grade = _d[2];
 
-          var _c = 1.0;
-          List<double> _l = [];
-          for (var i in [...value]) {
-            var _n = _calculator.getGrafe(i);
-            _l.add(_n);
-            if (_c == 6.0 && !value2) continue;
-            if (i.length == 0) {
-              _c++;
-              continue;
-            } else {
-              var a = double.parse((10 - _n).abs().toStringAsFixed(2));
-              _gradeSemester.add(FlSpot(_c, a));
-              _c++;
+            var _c = 1.0;
+            List<double> _l = [];
+            for (var i in [...value]) {
+              var _n = _calculator.getGrafe(i);
+              _l.add(_n);
+              if (_c == 6.0 && !value2) continue;
+              if (i.length == 0) {
+                _c++;
+                continue;
+              } else {
+                var a = double.parse((10 - _n).abs().toStringAsFixed(2));
+                _gradeSemester.add(FlSpot(_c, a));
+                _c++;
+              }
             }
-          }
-          _gradeSemesterNum = [[_l[0], _l[1]], [_l[2], _l[3]], [_l[4], _l[5]]];
-        });
+            _gradeSemesterNum = [[_l[0], _l[1]], [_l[2], _l[3]], [_l[4], _l[5]]];
+          });
+        }
       });
     });
   }
@@ -88,6 +93,13 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
   }
 
   @override
+  void didUpdateWidget(covariant MainStafulPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    getAllGradeCal();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     double _cardTitleSize = 27.0;
@@ -103,14 +115,14 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
             leading: IconButton(
                 icon: Icon(Icons.menu_outlined),
                 onPressed: () {
-
+                  SnackBarManager.showSnackBar(context, "이 기능은 추후 업데이트 될 예정입니다.", "확인", Duration(seconds: 2), Colors.blue);
                 }
             ),
             actions: <Widget>[
               IconButton(
                   icon: Icon(Icons.settings_rounded),
                   onPressed: () {
-
+                    Navigator.push(context, MaterialPageRoute(builder: (context2) => SettingPage()));
                   }
               )
             ],
@@ -532,7 +544,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                       ),
                                       lineBarsData: [LineChartBarData(
                                         isCurved: true,
-                                        barWidth: 5,
+                                        barWidth: 3,
                                         isStrokeCapRound: true,
                                         spots: _gradeSemester,
                                         dotData: FlDotData(
@@ -557,11 +569,13 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                                 (10 - touchedSpot.y).toStringAsFixed(2),
                                                 TextStyle(
                                                   color: touchedSpot.bar.colors[0],
-                                                  fontWeight: FontWeight.bold),
+                                                  fontWeight: FontWeight.bold,
+                                                    fontSize: 18
+                                                ),
                                             );
                                           }).toList();
                                         },
-                                        tooltipBgColor: Colors.black.withOpacity(0.05)
+                                        // tooltipBgColor: Colors.black.withOpacity(0.05)
                                       )
                                     )
                                   ),
@@ -581,7 +595,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                   padding: EdgeInsets.zero,
                   child: CarouselSlider(
                     options: CarouselOptions(
-                      height: 170.0,
+                      height: 130.0,
                       autoPlay: true,
                       viewportFraction: 0.9,
                       autoPlayInterval: Duration(seconds: 3),

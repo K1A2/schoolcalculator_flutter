@@ -52,6 +52,8 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
   }
 
   getAllGradeCal() {
+    _gradeSemester = [];
+    _typeScores = [[], [], [], [], [], []];
     _scoreJson.getAnalyzData().then((value) {
       final _scores = value;
       setState(() {
@@ -91,6 +93,12 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
     _calculator = SchoolScoreCalculator();
     getAllGradeCal();
   }
+
+  // @override
+  // void didUpdateWidget(covariant ScoreAnalyzePage oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   getAllGradeCal();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +215,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                   ),
                                   lineBarsData: [LineChartBarData(
                                     isCurved: true,
-                                    barWidth: 5,
+                                    barWidth: 3,
                                     isStrokeCapRound: true,
                                     spots: _gradeSemester,
                                     dotData: FlDotData(
@@ -231,12 +239,14 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                               return LineTooltipItem(
                                                 (10 - touchedSpot.y).toStringAsFixed(2),
                                                 TextStyle(
-                                                    color: touchedSpot.bar.colors[0],
-                                                    fontWeight: FontWeight.bold),
+                                                  color: touchedSpot.bar.colors[0],
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18
+                                                ),
                                               );
                                             }).toList();
                                           },
-                                          tooltipBgColor: Colors.black.withOpacity(0.05)
+                                          // tooltipBgColor: Colors.black.withOpacity(0.05)
                                       )
                                   )
                               ),
@@ -367,7 +377,9 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                           _type[rodIndex] + "\n" + (10 - rod.y).toStringAsFixed(2),
                                           TextStyle(
                                               color: rod.colors[0],
-                                              fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18
+                                          ),
                                         );
                                       },
                                       // tooltipBgColor: Colors.black.withOpacity(0.05)

@@ -54,9 +54,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
     return _prefs.getBool(_switchSave) ?? false;
   }
 
-  @override
-  void initState() {
-    super.initState();
+  initDatas() {
     final _semester = ["11", "12", "21", "22", "31", "32"];
     _json_data.getAllScoreDataSemester().then((value) {
       for (int i = 0;i < value.length;i++) {
@@ -79,6 +77,12 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
         _switch = value;
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initDatas();
   }
 
   @override
