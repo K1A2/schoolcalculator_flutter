@@ -692,7 +692,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
               child: Text(
                 "$n학기",
                 style: TextStyle(
-                    fontSize: 20
+                    // fontSize: 20
                 ),
               ),
               alignment: Alignment.bottomCenter,
@@ -702,7 +702,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
             child: Text(
               score.toStringAsFixed(2),
               style: TextStyle(
-                  fontSize: 18
+                  // fontSize: 18
               ),
             ),
           )
