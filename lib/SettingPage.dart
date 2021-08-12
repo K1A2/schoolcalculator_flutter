@@ -31,7 +31,7 @@ class _SettingPage extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Platform.isIOS ? AppBar(title: Text('두 번째')) : null,
+      appBar: Platform.isIOS ? AppBar(title: Text('설정')) : null,
       body: SafeArea(
         child: ListView(
           children: <Widget>[
@@ -46,7 +46,7 @@ class _SettingPage extends State<SettingPage> {
                     style: TextStyle(
                       color: Color(0xFF652D87),
                       fontSize: 15,
-                      fontWeight: FontWeight.w500
+                      fontWeight: FontWeight.w400
                     ),
                   ),
                   Padding(
@@ -58,7 +58,7 @@ class _SettingPage extends State<SettingPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text("3학년 2학기 성적 포함하기", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),),
+                              Text("3학년 2학기 성적 포함하기", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 15),),
                               Text(_isShow ? "3학년 2학기 성적을 포함합니다." : "3학년 2학기 성적을 포함하지 않습니다."),
                             ],
                           ),

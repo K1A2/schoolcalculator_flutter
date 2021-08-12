@@ -21,8 +21,8 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
   List<bool> _typeShow = [true, true, true, false, false, false];
   final List<String> _type = ["국어","수학","영어","과학탐구","사회탐구","기타"];
 
-  DecodeScoreJsonData _scoreJson;
-  SchoolScoreCalculator _calculator;
+  late DecodeScoreJsonData _scoreJson;
+  late SchoolScoreCalculator _calculator;
   List<Color> gradientColors = [
     const Color(0xFF484EA9),
     const Color(0xFF53256E),
@@ -404,7 +404,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                 activeColor: _typeGraphColors[0],
                                 onChanged: (v) {
                                   setState(() {
-                                    _typeShow[0] = v;
+                                    _typeShow[0] = v!;
                                   });
                                   setTypeGraphData();
                                 },
@@ -420,7 +420,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                 contentPadding: EdgeInsets.all(0),
                                 onChanged: (v) {
                                   setState(() {
-                                    _typeShow[1] = v;
+                                    _typeShow[1] = v!;
                                   });
                                   setTypeGraphData();
                                 },
@@ -436,7 +436,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                 contentPadding: EdgeInsets.all(0),
                                 onChanged: (v) {
                                   setState(() {
-                                    _typeShow[2] = v;
+                                    _typeShow[2] = v!;
                                   });
                                   setTypeGraphData();
                                 },
@@ -452,7 +452,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                 contentPadding: EdgeInsets.all(0),
                                 onChanged: (v) {
                                   setState(() {
-                                    _typeShow[3] = v;
+                                    _typeShow[3] = v!;
                                   });
                                   setTypeGraphData();
                                 },
@@ -468,7 +468,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                 contentPadding: EdgeInsets.all(0),
                                 onChanged: (v) {
                                   setState(() {
-                                    _typeShow[4] = v;
+                                    _typeShow[4] = v!;
                                   });
                                   setTypeGraphData();
                                 },
@@ -484,7 +484,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                                 contentPadding: EdgeInsets.all(0),
                                 onChanged: (v) {
                                   setState(() {
-                                    _typeShow[5] = v;
+                                    _typeShow[5] = v!;
                                   });
                                   setTypeGraphData();
                                 },

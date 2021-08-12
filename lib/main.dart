@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'widget/SnackManager.dart';
-
 import 'sub/MainPage.dart';
 import 'sub/SchoolScoreInputPage.dart';
 import 'sub/ScoreAnalyzePage.dart';
@@ -16,10 +13,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: MyaAppPage(),
       theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        primaryColor: Color(0xFF53256E),
-        fontFamily: "SCFream",
-        scaffoldBackgroundColor: Color(0xFFFDFDFD)
+        fontFamily: "SCDream",
+        primaryColor: Color(0xFF53256E)
       ),
     );
   }
@@ -33,7 +28,7 @@ class MyaAppPage extends StatefulWidget {
 }
 
 class _MyaAppPage extends State<MyaAppPage> with SingleTickerProviderStateMixin {
-  TabController controller;
+  late TabController controller;
   int _selectedIndex = 0;
 
   @override
@@ -73,7 +68,7 @@ class _MyaAppPage extends State<MyaAppPage> with SingleTickerProviderStateMixin 
           ),
           BottomNavigationBarItem(
             label: '성적 분석',
-            icon: Icon(Icons.show_chart_rounded)
+            icon: Icon(Icons.bar_chart_rounded)
           ),
         ],
         onTap: (int index) {

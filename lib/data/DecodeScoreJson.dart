@@ -3,7 +3,7 @@ import 'SchoolScore.dart';
 import 'ScoreDataIO.dart';
 
 class DecodeScoreJsonData {
-  ScoreDataIoManager _manager;
+  late ScoreDataIoManager _manager;
 
   DecodeScoreJsonData() {
     _manager = ScoreDataIoManager();

@@ -21,8 +21,8 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
   final _ratioSave = "scoreratio";
   final String _switchSave = "switch";
 
-  DecodeScoreJsonData _scoreJson;
-  SchoolScoreCalculator _calculator;
+  late DecodeScoreJsonData _scoreJson;
+  late SchoolScoreCalculator _calculator;
   var _ratio = "1:1:1";
   var _allGrade = 0.0, _1Grade = 0.0, _2Grade = 0.0, _3Grade = 0.0;
   List<FlSpot> _gradeSemester = [];
@@ -102,8 +102,8 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    double _cardTitleSize = 27.0;
-    double _cardScoreSize = 23.0;
+    double _cardTitleSize = 25.0;
+    double _cardScoreSize = 20.0;
 
     return Scaffold(
       body: CustomScrollView(
@@ -113,7 +113,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
             expandedHeight: _size.height / 4,
             pinned: true,
             leading: IconButton(
-                icon: Icon(Icons.menu_outlined),
+                icon: Icon(Icons.menu_rounded),
                 onPressed: () {
                   SnackBarManager.showSnackBar(context, "이 기능은 추후 업데이트 될 예정입니다.", "확인", Duration(seconds: 2), Colors.blue);
                 }
@@ -143,18 +143,18 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                     Text(
                       "종합 성적",
                       style: TextStyle(
-                          fontFamily: "SCFream",
+                          fontFamily: "SCDream",
                           fontWeight: FontWeight.w500,
-                          fontSize: 35,
+                          fontSize: 27,
                           color: Colors.white
                       ),
                     ),
                     Text(
                       _allGrade.toStringAsFixed(2),
                       style: TextStyle(
-                          fontFamily: "SCFream",
-                          fontWeight: FontWeight.w300,
-                          fontSize: 30,
+                          fontFamily: "SCDream",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 24,
                           color: Colors.white),
                     ),
                     Padding(
@@ -162,7 +162,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                       child: Text(
                         "* 아직 입력되지 않은 학년은 가장 최근 학년 성적으로 대체됩니다.",
                         style: TextStyle(
-                            fontFamily: "SCFream",
+                            fontFamily: "SCDream",
                             fontWeight: FontWeight.w200,
                             fontSize: 12,
                             color: Colors.white),
@@ -175,16 +175,13 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                         Text(
                           "등급 반영 비율 " + _ratio,
                           style: TextStyle(
-                              fontFamily: "SCFream",
+                              fontFamily: "SCDream",
                               fontWeight: FontWeight.w200,
-                              fontSize: 13,
+                              fontSize: 12,
                               color: Colors.white),
                         ),
                         IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
+                          icon: Icon(Icons.add_rounded, color: Colors.white,),
                           onPressed: () {
                             int _r1 = 1, _r2 = 1, _r3 = 1;
                             getScoreRatio().then((value) {
@@ -215,7 +212,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                               child: Text(
                                                 "등급 반영 비율 변경",
                                                 style: TextStyle(
-                                                    fontSize: 25,
+                                                    fontSize: 20,
                                                     fontWeight: FontWeight.w500
                                                 ),
                                               ),
@@ -390,7 +387,7 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                             Text(
                               "종합 성적",
                               style: TextStyle(
-                                  fontFamily: "SCFream",
+                                  fontFamily: "SCDream",
                                   fontWeight: FontWeight.w500,
                                   fontSize: _cardTitleSize,
                                   color: Colors.black
@@ -405,7 +402,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                     Text(
                                       "전 과목 평균 등급",
                                       style: TextStyle(
-                                          fontFamily: "SCFream",
                                           fontWeight: FontWeight.w300,
                                           fontSize: _cardScoreSize,
                                           color: Colors.black),
@@ -413,7 +409,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                     Text(
                                       _allGrade.toStringAsFixed(2),
                                       style: TextStyle(
-                                          fontFamily: "SCFream",
                                           fontWeight: FontWeight.w300,
                                           fontSize: _cardScoreSize,
                                           color: Colors.black),
@@ -451,7 +446,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                           Text(
                             "성적 분석",
                             style: TextStyle(
-                                fontFamily: "SCFream",
                                 fontWeight: FontWeight.w500,
                                 fontSize: _cardTitleSize,
                                 color: Colors.black
@@ -607,6 +601,9 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                               width: _size.width - 10,
                               margin: EdgeInsets.symmetric(horizontal: 5.0),
                               child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 child: Padding(
                                   padding: EdgeInsets.all(20),
                                   child: Column(
@@ -616,7 +613,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
                                       Text(
                                        (_gradeSemesterNum.indexOf(i) + 1).toString() + "학년 성적",
                                         style: TextStyle(
-                                            fontFamily: "SCFream",
                                             fontWeight: FontWeight.w500,
                                             fontSize: _cardTitleSize - 5,
                                             color: Colors.black
@@ -664,7 +660,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
             Text(
               "$n학년\n평균 등급",
               style: TextStyle(
-                  fontFamily: "SCFream",
                   fontWeight: FontWeight.w300,
                   fontSize: 20,
                   color: Colors.black),
@@ -672,7 +667,6 @@ class _MainStafulPage extends State<MainStafulPage> with AutomaticKeepAliveClien
             ),
             Text(score.toStringAsFixed(2),
                 style: TextStyle(
-                    fontFamily: "SCFream",
                     fontWeight: FontWeight.w300,
                     fontSize: 20,
                     color: Colors.black),

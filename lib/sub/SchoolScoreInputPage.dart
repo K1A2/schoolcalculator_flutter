@@ -10,10 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Item {
   Item({
-    @required this.code,
-    @required this.scores,
-    @required this.show,
-    @required this.index,
+    required this.code,
+    required this.scores,
+    required this.show,
+    required this.index,
     this.isExpanded = false,
   });
 

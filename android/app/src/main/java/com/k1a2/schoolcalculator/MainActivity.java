@@ -1,4 +1,4 @@
-package com.k1a2.schoolcalculator.schoolcalculator_flutter;
+package com.k1a2.schoolcalculator;
 
 import io.flutter.embedding.android.FlutterActivity;
 

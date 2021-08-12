@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 
 class SchoolScore {
   SchoolScore({
-    @required this.rank,
-    @required this.type,
-    @required this.point,
-    @required this.subject,
+    required this.rank,
+    required this.type,
+    required this.point,
+    required this.subject,
   });
 
   int rank;
