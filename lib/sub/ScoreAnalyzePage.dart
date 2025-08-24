@@ -40,7 +40,7 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
             if (_data != 0) {
               _data = double.parse((10 - _data).abs().toStringAsFixed(2));
             }
-            _inputData.add(BarChartRodData(y: _data, width: 4.5, colors: [_typeGraphColors[j]]));
+            _inputData.add(BarChartRodData(toY: _data, width: 4.5, color: _typeGraphColors[j]));
           } else {
             continue;
           }
@@ -136,122 +136,128 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                           child: Container(
                             child: LineChart(
                               LineChartData(
-                                  gridData: FlGridData(
-                                      getDrawingHorizontalLine: (value) {
-                                        return FlLine(
-                                            color: Colors.black12,
-                                            strokeWidth: 1
-                                        );
-                                      },
-                                      getDrawingVerticalLine: (value) {
-                                        return FlLine(
-                                          color: Color(0xff37434d),
-                                          strokeWidth: 5,
-                                        );
-                                      }
+                                gridData: FlGridData(
+                                  getDrawingHorizontalLine: (value) => const FlLine(
+                                    color: Colors.black12,
+                                    strokeWidth: 1,
                                   ),
-                                  titlesData: FlTitlesData(
-                                    show: true,
-                                    leftTitles: SideTitles(
+                                  getDrawingVerticalLine: (value) => const FlLine(
+                                    color: Colors.black12,
+                                    strokeWidth: 1,
+                                  ),
+                                ),
+                                titlesData: FlTitlesData(
+                                  leftTitles: AxisTitles(
+                                    sideTitles: SideTitles(
                                       showTitles: true,
-                                      getTextStyles: (style) {
-                                        return TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
+                                      reservedSize: 28,
+                                      getTitlesWidget: (value, meta) {
+                                        String text = '';
+                                        switch (value.toInt()) {
+                                          case 1: text = '9등급'; break;
+                                          case 3: text = '7등급'; break;
+                                          case 5: text = '5등급'; break;
+                                          case 7: text = '3등급'; break;
+                                          case 9: text = '1등급'; break;
+                                        }
+                                        return SideTitleWidget(
+                                          meta: meta,        // ★ axisSide → meta
+                                          space: 12,         // ★ margin → space
+                                          child: Text(
+                                            text,
+                                            style: const TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
                                         );
                                       },
-                                      getTitles: (value) {
-                                        switch (value.toInt()) {
-                                          case 1:
-                                            return '9등급';
-                                          case 3:
-                                            return '7등급';
-                                          case 5:
-                                            return '5등급';
-                                          case 7:
-                                            return '3등급';
-                                          case 9:
-                                            return '1등급';
-                                        }
-                                        return '';
-                                      },
-                                      reservedSize: 28,
-                                      margin: 12,
                                     ),
-                                    bottomTitles: SideTitles(
+                                  ),
+                                  bottomTitles: AxisTitles(
+                                    sideTitles: SideTitles(
                                       showTitles: true,
                                       reservedSize: 22,
-                                      getTextStyles: (v) {
-                                        return TextStyle(
-                                            color: Colors.black54,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12
+                                      getTitlesWidget: (value, meta) {
+                                        String text = '';
+                                        switch (value.toInt()) {
+                                          case 1: text = '1-1'; break;
+                                          case 2: text = '1-2'; break;
+                                          case 3: text = '2-1'; break;
+                                          case 4: text = '2-2'; break;
+                                          case 5: text = '3-1'; break;
+                                          case 6: text = '3-2'; break;
+                                        }
+                                        return SideTitleWidget(
+                                          meta: meta,
+                                          space: 8,
+                                          child: Text(
+                                            text,
+                                            style: const TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
                                         );
                                       },
-                                      getTitles: (value) {
-                                        switch (value.toInt()) {
-                                          case 1:
-                                            return '1-1';
-                                          case 2:
-                                            return '1-2';
-                                          case 3:
-                                            return '2-1';
-                                          case 4:
-                                            return '2-2';
-                                          case 5:
-                                            return '3-1';
-                                          case 6:
-                                            return '3-2';
-                                        }
-                                        return '';
-                                      },
-                                      margin: 8,
                                     ),
                                   ),
-                                  borderData: FlBorderData(
-                                    show: true,
-                                    border: Border.all(color: Colors.black54, width: 1),
-                                  ),
-                                  lineBarsData: [LineChartBarData(
+                                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                ),
+                                borderData: FlBorderData(
+                                  show: true,
+                                  border: Border.all(color: Colors.black54, width: 1),
+                                ),
+                                lineBarsData: [
+                                  LineChartBarData(
                                     isCurved: true,
+                                    curveSmoothness: 0.5,
                                     barWidth: 3,
                                     isStrokeCapRound: true,
                                     spots: _gradeSemester,
-                                    dotData: FlDotData(
-                                      show: true,
-                                    ),
-                                    colors: gradientColors,
+                                    dotData: const FlDotData(show: true),
+                                    // v1.0.0: colors → color/gradient
+                                    gradient: LinearGradient(colors: gradientColors),
                                     belowBarData: BarAreaData(
-                                        show: true,
-                                        colors: gradientColors.map((color) => color.withOpacity(0.3)).toList()
+                                      show: true,
+                                      gradient: LinearGradient(
+                                        colors: gradientColors.map((c) => c.withOpacity(0.3)).toList(),
+                                      ),
                                     ),
-                                    curveSmoothness: 0.5,
-                                  )],
-                                  minX: 1,
-                                  maxX: 6,
-                                  minY: 1,
-                                  maxY: 9,
-                                  lineTouchData: LineTouchData(
-                                      touchTooltipData: LineTouchTooltipData(
-                                          getTooltipItems: (touchedSpots) {
-                                            return touchedSpots.map((touchedSpot) {
-                                              return LineTooltipItem(
-                                                (10 - touchedSpot.y).toStringAsFixed(2),
-                                                TextStyle(
-                                                  color: touchedSpot.bar.colors[0],
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18
-                                                ),
-                                              );
-                                            }).toList();
-                                          },
-                                          // tooltipBgColor: Colors.black.withOpacity(0.05)
-                                      )
-                                  )
+                                  ),
+                                ],
+                                minX: 1,
+                                maxX: 6,
+                                minY: 1,
+                                maxY: 9,
+                                lineTouchData: LineTouchData(
+                                  touchTooltipData: LineTouchTooltipData(
+                                    getTooltipItems: (touchedSpots) {
+                                      return touchedSpots.map((touchedSpot) {
+                                        final bar = touchedSpot.bar;
+                                        final color =
+                                            bar.gradient?.colors.first ?? bar.color ?? Colors.black;
+                                        return LineTooltipItem(
+                                          (10 - touchedSpot.y).toStringAsFixed(2),
+                                          TextStyle(
+                                            color: color,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
+                                    // v1.0.0: tooltipBgColor → getTooltipColor
+                                    getTooltipColor: (_) => Colors.black.withOpacity(0.05),
+                                  ),
+                                ),
                               ),
-                              swapAnimationDuration: Duration(milliseconds: 500), // Optional
-                              swapAnimationCurve: Curves.linear,
+                              // v1.0.0: swapAnimationDuration/Curve → duration/curve
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.linear,
                             ),
                           ),
                         )
@@ -291,103 +297,108 @@ class _ScoreAnalyzePage extends State<ScoreAnalyzePage> with AutomaticKeepAliveC
                               child: BarChart(
                                 BarChartData(
                                   gridData: FlGridData(
-                                      getDrawingHorizontalLine: (value) {
-                                        return FlLine(
-                                            color: Colors.black12,
-                                            strokeWidth: 1
-                                        );
-                                      },
-                                      getDrawingVerticalLine: (value) {
-                                        return FlLine(
-                                          color: Color(0xff37434d),
-                                          strokeWidth: 5,
-                                        );
-                                      }
+                                    getDrawingHorizontalLine: (value) => const FlLine(
+                                      color: Colors.black12,
+                                      strokeWidth: 1,
+                                    ),
+                                    getDrawingVerticalLine: (value) => const FlLine(
+                                      color: Colors.black12,
+                                      strokeWidth: 1,
+                                    ),
                                   ),
                                   titlesData: FlTitlesData(
-                                    show: true,
-                                    leftTitles: SideTitles(
-                                      showTitles: true,
-                                      getTextStyles: (style) {
-                                        return TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        );
-                                      },
-                                      getTitles: (value) {
-                                        switch (value.toInt()) {
-                                          case 1:
-                                            return '9등급';
-                                          case 3:
-                                            return '7등급';
-                                          case 5:
-                                            return '5등급';
-                                          case 7:
-                                            return '3등급';
-                                          case 9:
-                                            return '1등급';
-                                        }
-                                        return '';
-                                      },
-                                      reservedSize: 28,
-                                      margin: 12,
+                                    leftTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        reservedSize: 28,
+                                        getTitlesWidget: (value, meta) {
+                                          String text = '';
+                                          switch (value.toInt()) {
+                                            case 1: text = '9등급'; break;
+                                            case 3: text = '7등급'; break;
+                                            case 5: text = '5등급'; break;
+                                            case 7: text = '3등급'; break;
+                                            case 9: text = '1등급'; break;
+                                          }
+                                          return SideTitleWidget(
+                                            meta: meta,         // axisSide → meta
+                                            space: 12,          // margin → space
+                                            child: Text(
+                                              text,
+                                              style: const TextStyle(
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                    bottomTitles: SideTitles(
-                                      showTitles: true,
-                                      reservedSize: 22,
-                                      getTextStyles: (v) {
-                                        return TextStyle(
-                                            color: Colors.black54,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12
-                                        );
-                                      },
-                                      getTitles: (value) {
-                                        switch (value.toInt()) {
-                                          case 1:
-                                            return '1-1';
-                                          case 2:
-                                            return '1-2';
-                                          case 3:
-                                            return '2-1';
-                                          case 4:
-                                            return '2-2';
-                                          case 5:
-                                            return '3-1';
-                                          case 6:
-                                            return '3-2';
-                                        }
-                                        return '';
-                                      },
-                                      margin: 8,
+                                    bottomTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        reservedSize: 22,
+                                        getTitlesWidget: (value, meta) {
+                                          String text = '';
+                                          switch (value.toInt()) {
+                                            case 1: text = '1-1'; break;
+                                            case 2: text = '1-2'; break;
+                                            case 3: text = '2-1'; break;
+                                            case 4: text = '2-2'; break;
+                                            case 5: text = '3-1'; break;
+                                            case 6: text = '3-2'; break;
+                                          }
+                                          return SideTitleWidget(
+                                            meta: meta,
+                                            space: 8,
+                                            child: Text(
+                                              text,
+                                              style: const TextStyle(
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
+                                    topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                    rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                                   ),
                                   borderData: FlBorderData(
                                     show: true,
                                     border: Border.all(color: Colors.black54, width: 1),
                                   ),
+
+                                  // ⬇️ showingBarGroups도 v1 형태여야 합니다(예시는 아래 참고)
                                   barGroups: showingBarGroups,
+
                                   minY: 1,
                                   maxY: 9,
                                   barTouchData: BarTouchData(
                                     touchTooltipData: BarTouchTooltipData(
-                                      getTooltipItem:  (group, groupIndex, rod, rodIndex) {
+                                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                                        final color =
+                                            rod.gradient?.colors.first ?? rod.color ?? Colors.black;
                                         return BarTooltipItem(
-                                          _type[rodIndex] + "\n" + (10 - rod.y).toStringAsFixed(2),
+                                          '${_type[rodIndex]}\n${(10 - rod.toY).toStringAsFixed(2)}',
                                           TextStyle(
-                                              color: rod.colors[0],
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18
+                                            color: color,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
                                           ),
                                         );
                                       },
-                                      // tooltipBgColor: Colors.black.withOpacity(0.05)
-                                    )
-                                  )
+                                      // tooltipBgColor → getTooltipColor
+                                      getTooltipColor: (_) => Colors.black.withOpacity(0.05),
+                                    ),
+                                  ),
                                 ),
-                                swapAnimationDuration: Duration(milliseconds: 500), // Optional
-                                swapAnimationCurve: Curves.linear,
+                                // swapAnimationDuration/Curve → duration/curve
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.linear,
                               )
                             ),
                           )

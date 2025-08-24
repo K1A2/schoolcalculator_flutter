@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'dart:ffi' hide Size;
 
 import 'package:flutter/material.dart';
 import '../data/DecodeScoreJson.dart';
@@ -96,24 +96,27 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
               child: ExpansionPanelList(
                 expansionCallback: (int index, bool isExpanded) {
                   setState(() {
-                    _data[index].isExpanded = !isExpanded;
+                    _data[index].isExpanded = isExpanded;
+                    debugPrint('${_data[index].isExpanded} $isExpanded $index');
                   });
                 },
-                children: _data.map<ExpansionPanel>((Item item) {
+                children: List.generate(_data.length, (i) {
+                  debugPrint(_data[i].code);
                   return ExpansionPanel(
                       headerBuilder: (BuildContext context1, bool isExpanded) {
                         return ListTile(
-                          title: Text(item.show),
-                          subtitle: Text("학기 성적: " + _calculated[item.index].toStringAsFixed(2) + " 과목: " + item.scores.length.toString() + "개"),
+                          title: Text(_data[i].show),
+                          subtitle: Text("학기 성적: " + _calculated[_data[i].index].toStringAsFixed(2) + " 과목: " + _data[i].scores.length.toString() + "개"),
                         );
                       },
+                      canTapOnHeader: true,
                       body: Container(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Visibility(
-                              visible: item.code == '32' ? true : false,
+                              visible: _data[i].code == '32' ? true : false,
                               child: Container(
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
@@ -140,7 +143,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                               ),
                             ),
                             Visibility(
-                              visible: item.code == '32' ? _switch : true,
+                              visible: _data[i].code == '32' ? _switch : true,
                               child: Container(
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
@@ -187,14 +190,14 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                               ),
                             ),
                             Visibility(
-                              visible: item.code == '32' ? _switch : true,
+                              visible: _data[i].code == '32' ? _switch : true,
                               child: Container(
-                                height:  _expandPaddingSize + _cardSize * item.scores.length < _size.height / 3 ?
-                                _expandPaddingSize + _cardSize * item.scores.length : _size.height / 3,
+                                height:  _expandPaddingSize + _cardSize * _data[i].scores.length < _size.height / 3 ?
+                                _expandPaddingSize + _cardSize * _data[i].scores.length : _size.height / 3,
                                 child: ListView.builder(
-                                  controller: _scrollController[item.index],
+                                  controller: _scrollController[_data[i].index],
                                   padding: EdgeInsets.all(_expandPaddingSize),
-                                  itemCount: item.scores.length,
+                                  itemCount: _data[i].scores.length,
                                   itemBuilder: (BuildContext context2, int index2) {
                                     return Container(
                                       height: _cardSize,
@@ -213,14 +216,14 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                     padding: EdgeInsets.only(right: 5),
                                                     child: OutlinedButton(
                                                       child: Text(
-                                                        item.scores[index2].subject,
+                                                        _data[i].scores[index2].subject,
                                                         overflow: TextOverflow.ellipsis,
                                                       ),
                                                       style: OutlinedButton.styleFrom(
-                                                        primary: Color(0xFF53256E),
+                                                        foregroundColor: Color(0xFF53256E),
                                                       ),
                                                       onPressed: () async {
-                                                        subjectController.text = item.scores[index2].subject;
+                                                        subjectController.text = _data[i].scores[index2].subject;
                                                         FocusNode _focusNode = new FocusNode();
 
                                                         String reslut = await showDialog(
@@ -267,7 +270,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                         },
                                                                         child: const Text('취소'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.red
+                                                                            foregroundColor: Colors.red
                                                                         ),
                                                                       ),
                                                                       TextButton(
@@ -276,9 +279,9 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                           String _sub = subjectController.text;
                                                                           if (_sub.isNotEmpty) {
                                                                             setState(() {
-                                                                              item.scores[index2].subject = subjectController.text;
+                                                                              _data[i].scores[index2].subject = subjectController.text;
                                                                             });
-                                                                            _json_data.changeSemesterData(item.code, item.scores);
+                                                                            _json_data.changeSemesterData(_data[i].code, _data[i].scores);
                                                                           } else {
                                                                             SnackBarManager.showSnackBar(context, "빈 칸 입니다.", "확인", Duration(milliseconds: 1000), Colors.red);
                                                                           }
@@ -286,7 +289,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                         },
                                                                         child: const Text('저장'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.blue
+                                                                            foregroundColor: Colors.blue
                                                                         ),
                                                                       ),
                                                                     ],
@@ -304,12 +307,12 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                   child: Padding(
                                                     padding: EdgeInsets.only(right: 5, left: 5),
                                                     child: OutlinedButton(
-                                                      child: Text(item.scores[index2].rank.toString()),
+                                                      child: Text(_data[i].scores[index2].rank.toString()),
                                                       style: OutlinedButton.styleFrom(
-                                                        primary: Color(0xFF53256E),
+                                                        foregroundColor: Color(0xFF53256E),
                                                       ),
                                                       onPressed: () async {
-                                                        var _rank = item.scores[index2].rank;
+                                                        var _rank = _data[i].scores[index2].rank;
 
                                                         String reslut = await showDialog(
                                                             context: context,
@@ -346,21 +349,21 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                         onPressed: () => Navigator.pop(context, 'Cancel'),
                                                                         child: const Text('취소'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.red
+                                                                            foregroundColor: Colors.red
                                                                         ),
                                                                       ),
                                                                       TextButton(
                                                                         onPressed: () {
                                                                           Navigator.pop(context, 'OK');
                                                                           setState(() {
-                                                                            item.scores[index2].rank = _rank;
-                                                                            _calculated[item.index] = _calculator.getGrafe(item.scores);
+                                                                            _data[i].scores[index2].rank = _rank;
+                                                                            _calculated[_data[i].index] = _calculator.getGrafe(_data[i].scores);
                                                                           });
-                                                                          _json_data.changeSemesterData(item.code, item.scores);
+                                                                          _json_data.changeSemesterData(_data[i].code, _data[i].scores);
                                                                         },
                                                                         child: const Text('저장'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.blue
+                                                                            foregroundColor: Colors.blue
                                                                         ),
                                                                       ),
                                                                     ],
@@ -378,12 +381,12 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                   child: Padding(
                                                     padding: EdgeInsets.only(right: 5, left: 5),
                                                     child: OutlinedButton(
-                                                      child: Text(item.scores[index2].point.toString()),
+                                                      child: Text(_data[i].scores[index2].point.toString()),
                                                       style: OutlinedButton.styleFrom(
-                                                        primary: Color(0xFF53256E),
+                                                        foregroundColor: Color(0xFF53256E),
                                                       ),
                                                       onPressed: () async {
-                                                        var _point = item.scores[index2].point;
+                                                        var _point = _data[i].scores[index2].point;
 
                                                         String reslut = await showDialog(
                                                             context: context,
@@ -420,21 +423,21 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                         onPressed: () => Navigator.pop(context, 'Cancel'),
                                                                         child: const Text('취소'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.red
+                                                                            foregroundColor: Colors.red
                                                                         ),
                                                                       ),
                                                                       TextButton(
                                                                         onPressed: () {
                                                                           Navigator.pop(context, 'OK');
                                                                           setState(() {
-                                                                            item.scores[index2].point = _point;
-                                                                            _calculated[item.index] = _calculator.getGrafe(item.scores);
+                                                                            _data[i].scores[index2].point = _point;
+                                                                            _calculated[_data[i].index] = _calculator.getGrafe(_data[i].scores);
                                                                           });
-                                                                          _json_data.changeSemesterData(item.code, item.scores);
+                                                                          _json_data.changeSemesterData(_data[i].code, _data[i].scores);
                                                                         },
                                                                         child: const Text('저장'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.blue
+                                                                            foregroundColor: Colors.blue
                                                                         ),
                                                                       ),
                                                                     ],
@@ -452,12 +455,12 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                   child: Padding(
                                                     padding: EdgeInsets.only(right: 5, left: 5),
                                                     child: OutlinedButton(
-                                                      child: Text(_type[item.scores[index2].type]),
+                                                      child: Text(_type[_data[i].scores[index2].type]),
                                                       style: OutlinedButton.styleFrom(
-                                                        primary: Color(0xFF53256E),
+                                                        foregroundColor: Color(0xFF53256E),
                                                       ),
                                                       onPressed: () async {
-                                                        var _typeNumeric = item.scores[index2].type;
+                                                        var _typeNumeric = _data[i].scores[index2].type;
 
                                                         String reslut = await showDialog(
                                                             context: context,
@@ -497,20 +500,20 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                                         onPressed: () => Navigator.pop(context, 'Cancel'),
                                                                         child: const Text('취소'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.red
+                                                                            foregroundColor: Colors.red
                                                                         ),
                                                                       ),
                                                                       TextButton(
                                                                         onPressed: () {
                                                                           Navigator.pop(context, 'OK');
                                                                           setState(() {
-                                                                            item.scores[index2].type = _typeNumeric;
+                                                                            _data[i].scores[index2].type = _typeNumeric;
                                                                           });
-                                                                          _json_data.changeSemesterData(item.code, item.scores);
+                                                                          _json_data.changeSemesterData(_data[i].code, _data[i].scores);
                                                                         },
                                                                         child: const Text('저장'),
                                                                         style: TextButton.styleFrom(
-                                                                            primary: Colors.blue
+                                                                            foregroundColor: Colors.blue
                                                                         ),
                                                                       ),
                                                                     ],
@@ -536,13 +539,13 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                                                       onPressed: () {
                                                         SnackBarManager.showSnackBar(
                                                             context,
-                                                            item.scores[index2].subject + ' 삭제', '확인',
+                                                            _data[i].scores[index2].subject + ' 삭제', '확인',
                                                             Duration(milliseconds: 1500), Colors.red
                                                         );
                                                         setState(() {
-                                                          item.scores.removeAt(index2);
+                                                          _data[i].scores.removeAt(index2);
                                                         });
-                                                        _json_data.changeSemesterData(item.code, item.scores);
+                                                        _json_data.changeSemesterData(_data[i].code, _data[i].scores);
                                                       },
                                                     ),
                                                   ),
@@ -558,27 +561,28 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                               ),
                             ),
                             Visibility(
-                              visible: item.code == '32' ? _switch : true,
+                              visible: _data[i].code == '32' ? _switch : true,
                               child: Container(
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
                                   child: SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton.icon(
-                                      icon: Icon(Icons.add_rounded),
+                                      icon: Icon(Icons.add_rounded, color: Colors.white),
                                       style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFF53256E)
+                                          backgroundColor: Color(0xFF53256E)
                                       ),
-                                      label: Text('과목 추가하기'),
+                                      label: Text('과목 추가하기',
+                                      style: TextStyle(color: Colors.white),),
                                       onPressed: () {
                                         setState(() {
                                           SchoolScore value = SchoolScore(rank: 1, type: 0, point: 1, subject: "국어");
-                                          item.scores.add(value);
-                                          _calculated[item.index] = _calculator.getGrafe(item.scores);
-                                          var _scroll = _scrollController[item.index];
+                                          _data[i].scores.add(value);
+                                          _calculated[_data[i].index] = _calculator.getGrafe(_data[i].scores);
+                                          var _scroll = _scrollController[_data[i].index];
                                           _scroll.animateTo(_scroll.position.maxScrollExtent + _cardSize, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
                                         });
-                                        _json_data.changeSemesterData(item.code, item.scores);
+                                        _json_data.changeSemesterData(_data[i].code, _data[i].scores);
                                       },
                                     ),
                                   ),
@@ -588,7 +592,7 @@ class _SchoolScoreInputPage extends State<SchoolScoreInputPage> with AutomaticKe
                           ],
                         ),
                       ),
-                      isExpanded: item.isExpanded
+                      isExpanded: _data[i].isExpanded
                   );
                 }).toList(),
               ),
